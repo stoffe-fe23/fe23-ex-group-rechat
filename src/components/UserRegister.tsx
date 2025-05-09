@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../datastore/hooks';
-import { selectUserData, selectUserName, selectUserPicture, userLogoff } from '../datastore/sliceChatUser';
+import { userRegister } from '../datastore/sliceChatUser';
 
 import userIconNone from '/usericon-none.png';
 import userIconDef from '/usericon-default.png';
+import { RegisterUserData } from '../typedefs/chatUserTypes';
 
 
 export default function UserRegister(): React.JSX.Element {
@@ -20,7 +21,18 @@ export default function UserRegister(): React.JSX.Element {
     function onRegisterSubmit(evt: React.SyntheticEvent<HTMLFormElement>): void {
         evt.preventDefault();
 
+        if (password.length && passwordAgain.length && (password != passwordAgain)) {
+            alert("The password do not match, try again.");
+            return;
+        }
 
+        const newUserData: RegisterUserData = {
+            nickname: nickname,
+            email: email,
+            password: password
+        }
+
+        dispatch(userRegister(newUserData));
     }
 
     // TODO: Change indicator if the two password match or not!
