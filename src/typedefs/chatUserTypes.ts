@@ -1,3 +1,4 @@
+import { User } from "firebase/auth"
 
 
 export type LoginData = {
@@ -26,7 +27,7 @@ export type ChatUserProfile = {
     authid: string,
     picture: string,
     nickname: string,
-    channelid: string,
+    channelid?: string,
     activity: number | Date
 }
 
@@ -41,8 +42,30 @@ export type ChatUserAuth = {
 
 }
 
+export type ChatUserData = {
+    uid: string,
+    email: string,
+    emailVerified: boolean,
+    picture: string,
+    nickname: string,
+    activity: number | Date,
+    creationTime: string,
+    lastSignInTime: string,
+    channelid?: string,
+    authenticated: boolean
+}
+
+/*
 export type ChatUserState = {
     userAuth: ChatUserAuth | null,
+    userProfile: ChatUserProfile | null,
+    authenticated: boolean
+
+}
+
+*/
+export type ChatUserState = {
+    userAuth: User | null,
     userProfile: ChatUserProfile | null,
     authenticated: boolean
 

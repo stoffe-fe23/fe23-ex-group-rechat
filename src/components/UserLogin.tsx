@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-
-import { LoginData } from '../typedefs/chatUserTypes';
-import { useAppDispatch } from '../datastore/hooks';
-import { userLogin } from '../datastore/sliceChatUser';
-
+import { useUserLoginMutation } from '../datastore/userSlice';
 
 
 export default function UserLogin(): React.JSX.Element {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const dispatch = useAppDispatch();
+    const [userLogin, { isLoading, isError, error }] = useUserLoginMutation();
 
 
-    function onLoginSubmit(event: React.SyntheticEvent<HTMLFormElement>): void {
+    async function onLoginSubmit(event: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
 
-        const loginData: LoginData = {
-            username: email,
-            password: password
-        };
-
-        dispatch(userLogin(loginData));
+        try {
+            const userData = await userLogin({ email, password }).unwrap();
+            console.log("LOGIN SUCCESS:", userData);
+        }
+        catch (err) {
+            console.log("LOGIN FAILURE:", err);
+        }
 
         // Reset login form fields
         setEmail("");
@@ -32,6 +29,7 @@ export default function UserLogin(): React.JSX.Element {
     return (
         <>
             <section>
+                {isLoading && <div>Please wait...</div>}
                 <form onSubmit={onLoginSubmit}>
                     <div>
                         <label htmlFor="login-email">Email address</label>
@@ -47,7 +45,7 @@ export default function UserLogin(): React.JSX.Element {
                 </form>
 
                 <div>
-                    <NavLink to="/signup">Create user account</NavLink>
+                    <NavLink to="/user/register">Create user account</NavLink>
                 </div>
             </section>
         </>

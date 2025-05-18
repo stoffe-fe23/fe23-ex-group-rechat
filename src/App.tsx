@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './datastore/hooks';
-import { selectUserData, userLoad, userUnload } from './datastore/sliceChatUser';
+// import { selectUserData, userLoad, userUnload } from './datastore/sliceChatUser';
 import UserLogin from './components/UserLogin';
 import UserProfileButton from './components/UserProfileButton';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -18,19 +16,30 @@ import ChannelJoinPage from './components/ChannelJoinPage';
 import ChannelPage from './components/ChannelPage';
 import ChannelCreatePage from './components/ChannelCreatePage';
 import PageTabs from './components/PageTabs';
+import { useUserLoadQuery } from './datastore/userSlice';
 
 
 function App() {
     const dispatch = useAppDispatch();
-    const userData = useAppSelector(selectUserData);
+    // const userData = useAppSelector(selectUserData);
+    let userData = useUserLoadQuery();
 
-    // Initialize user authentication state observer
+    // Initialize user authentication observer
     // on login, logoff and page load.
+    useEffect(() => {
+        onAuthStateChanged(firebaseAuth, (user) => {
+            console.log("onAuthStateChanged()", user);
+            // userData = useUserLoadQuery();
+        });
+
+    }, [userData, dispatch]);
+    /*
     useEffect(() => {
         onAuthStateChanged(firebaseAuth, (user) => {
             if (user) {
                 // User logged in - load user info
                 dispatch(userLoad());
+
                 console.log("userLoad() dispatch");
             } else {
                 // User logged off - unload user info
@@ -40,6 +49,7 @@ function App() {
         });
 
     }, [dispatch]);
+    */
 
     return (
         <>

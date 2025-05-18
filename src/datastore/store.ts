@@ -1,11 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import chatUserReducer from "./sliceChatUser";
+// import chatUserReducer from "./sliceChatUser";
+import { firebaseApi } from "../api/firebase-api";
+
 
 
 export const store = configureStore({
     reducer: {
-        user: chatUserReducer
-    }
+        // user: chatUserReducer
+        [firebaseApi.reducerPath]: firebaseApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(firebaseApi.middleware),
 });
 
 // Type definitions for the Root State and dispatch

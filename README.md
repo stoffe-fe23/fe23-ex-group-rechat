@@ -1,54 +1,95 @@
-# React + TypeScript + Vite
+# Group ReChat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## Firebase access rules
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Includes some business login against best practice to allow the app to run on the subscription free version of the Firebase service.
 
 ```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+rules_version = '2';
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+service cloud.firestore {
+	match /databases/{database}/documents {
+		match /messages/{document=**} {
+				allow read: if isInchannel();
+				allow delete: if (isInchannel() && isCreator(resource.data));
+				allow update: if (isCreator(resource.data) && isValidEditMessageData(request.resource.data));
+				allow create: if (isLoggedIn() && isValidNewMessageData(request.resource.data));
+		}
+		match /users/{userId} {
+				allow read: if isLoggedIn();
+				allow update, delete: if (isLoggedIn() && (request.auth.uid == userId));
+				allow create: if ((request.auth != null) && isValidUserData(request.resource.data));
+		}
+		match /channels/{document=**} {
+				allow read: if true;
+				allow delete: if (isChannelAdmin() && !resource.data.permanent);
+				allow update: if (isChannelAdmin() && isValidEditChannelData(request.resource.data));
+				allow create: if (isLoggedIn() && isValidNewChannelData(request.resource.data));
+		}		
+		
+		function isLoggedIn() {
+			return ((request.auth != null) && request.auth.token.email_verified);
+		}
+		
+		function isInchannel() {
+			return isLoggedIn() && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.channelid == request.resource.data.channelid);
+		}
+		
+		function isCreator(msg) {
+			return isLoggedIn() && (request.auth.uid == msg.author);
+		}
+		
+		function isValidNewMessageData(msg) {
+			return (msg.keys().hasAll(['content', 'postdate', 'author', 'channelid'])
+				&& ('content' in msg) && (msg.content is string) && (msg.content.size() > 0)
+				&& ('postdate' in msg) && (msg.postdate is timestamp)
+				&& ('author' in msg) && (msg.author is string) && (msg.author == request.auth.uid)
+				&& ('channelid' in msg) && (msg.channelid is string) && (msg.channelid == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.channelid)
+			);
+		}
+		
+		function isValidEditMessageData(msg) {
+			return (
+				   ('content' in msg) && (msg.content is string) && (msg.content.size() > 0)
+				&& !('postdate' in msg) || (('postdate' in msg) && (msg.postdate is timestamp))
+				&& !('author' in msg) || (('author' in msg) && (msg.author is string) && (msg.author == resource.data.author))
+				&& !('channelid' in msg) || (('channelid' in msg) && (msg.channelid is string) && (msg.channelid == resource.data.channelid))
+			);
+		}		
+		
+		function isValidUserData(usr) {
+			return (usr.keys().hasAll(['authid', 'name', 'channelid', 'picture','activity'])
+				&& ('name' in usr) && (usr.name is string) && (usr.name.size() > 1)
+				&& ('authid' in usr) && (usr.authid is string) && (usr.authid == request.auth.uid)
+				&& !('channelid' in usr) || (('channelid' in usr) && (usr.channelid is string) && exists(/databases/$(database)/documents/channels/$(usr.channelid)))
+				&& !('picture' in usr) || (('picture' in usr) && (usr.picture is string)) 
+				&& ('activity' in usr) && (usr.activity is timestamp)
+			);
+							
+		}
+		
+		function isValidNewChannelData(chan) {
+			return (
+				   ('name' in chan) && (chan.name is string) && (chan.name.size() > 2)
+				&& ('description' in chan) && (chan.description is string) && (chan.description.size() > 2)
+				&& !('permanent' in chan) || (('permanent' in chan) && (chan.permanent is bool))
+				&& ('admin' in chan) && (chan.admin is string) && (chan.admin == request.auth.uid)
+			);
+		}
+		
+		function isValidEditChannelData(chan) {
+			return (isChannelAdmin()
+				&& !('name' in chan)
+				&& !('description' in chan) || (('description' in chan) && (chan.description is string) && (chan.description.size() > 2))
+				&& !('permanent' in chan) || (('permanent' in chan) && (chan.permanent is bool))
+				&& !('admin' in chan)
+			);
+		}		
+		
+		function isChannelAdmin() {
+			return isInchannel() && (request.auth.uid == resource.data.admin)
+		}
+	}
+}
 ```
