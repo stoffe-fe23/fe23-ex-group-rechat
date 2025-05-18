@@ -16,20 +16,20 @@ import ChannelJoinPage from './components/ChannelJoinPage';
 import ChannelPage from './components/ChannelPage';
 import ChannelCreatePage from './components/ChannelCreatePage';
 import PageTabs from './components/PageTabs';
-import { useUserLoadQuery } from './datastore/userSlice';
-
+import { authApi, useUserLoadQuery } from './datastore/userSlice';
 
 function App() {
     const dispatch = useAppDispatch();
     // const userData = useAppSelector(selectUserData);
-    let userData = useUserLoadQuery();
+    const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
+
 
     // Initialize user authentication observer
     // on login, logoff and page load.
     useEffect(() => {
         onAuthStateChanged(firebaseAuth, (user) => {
             console.log("onAuthStateChanged()", user);
-            // userData = useUserLoadQuery();
+            dispatch(authApi.util.prefetch('userLoad', undefined, { force: true }));
         });
 
     }, [userData, dispatch]);

@@ -3,7 +3,7 @@
 
 ## Firebase access rules
 
-Includes some business login against best practice to allow the app to run on the subscription free version of the Firebase service.
+Includes some business logic against best practice to allow the app to run on the subscription free version of the Firebase service.
 
 ```js
 rules_version = '2';

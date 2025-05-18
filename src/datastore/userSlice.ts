@@ -26,6 +26,7 @@ export const authApi = firebaseApi.injectEndpoints({
         /* Load user authentication and profile data */
         userLoad: builder.query<ChatUserData, void>({
             async queryFn() {
+                console.log("DEBUG: USERLOAD START");
                 try {
                     const userState: ChatUserData = {
                         uid: "",
