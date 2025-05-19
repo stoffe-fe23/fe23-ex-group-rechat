@@ -1,5 +1,5 @@
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
-import { getDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { getDoc, doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import {
     signInWithEmailAndPassword,
     signOut,
@@ -117,7 +117,7 @@ export const authApi = firebaseApi.injectEndpoints({
                             picture: "",
                             nickname: nickname.length ? nickname : "Anonymous",
                             channelid: "",
-                            activity: new Date()
+                            activity: serverTimestamp()
                         }
 
                         await setDoc(doc(firebaseDB, "users", userCredential.user.uid), userProfileData);
@@ -165,7 +165,7 @@ export const authApi = firebaseApi.injectEndpoints({
                             authid: firebaseAuth.currentUser.uid,
                             picture: picture,
                             nickname: nickname,
-                            activity: new Date()
+                            activity: serverTimestamp()
                         }
                         await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), profileData);
                         console.log("PROFILE EDIT:", profileData, firebaseAuth.currentUser);
