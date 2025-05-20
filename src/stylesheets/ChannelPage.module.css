@@ -1,0 +1,29 @@
+.channel-page {
+    display: grid;
+    grid-template-areas: "header header" "users messages";
+    grid-template-columns: 200px auto;
+    grid-template-rows: auto 1fr;
+    align-items: stretch;
+    justify-items: stretch;
+}
+
+.channel-page-header {
+    grid-area: header;
+    background-color: rgba(120, 120, 120, 1.0);
+}
+
+.channel-page-header h2 {
+    margin: 0;
+}
+
+.channel-page-users {
+    grid-area: users;
+    background-color: rgb(199, 103, 103);
+}
+
+.channel-page-messages {
+    grid-area: messages;
+    background-color: rgba(180, 180, 180, 1.0);
+    display: flex;
+    flex-direction: column;
+}

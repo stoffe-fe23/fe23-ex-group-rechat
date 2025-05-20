@@ -1,0 +1,33 @@
+.channel-message {
+    border: 1px solid green;
+    display: grid;
+    grid-template-areas:
+        "picture name"
+        "picture date"
+        "content content";
+    grid-template-columns: auto 1fr;
+    width: 100%;
+}
+
+.channel-message-picture {
+    grid-area: picture;
+    width: 32px;
+    height: auto;
+}
+
+.channel-message-name {
+    grid-area: name;
+    font-weight: 700;
+    text-align: left;
+}
+
+.channel-message-date {
+    grid-area: date;
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+.channel-message-text {
+    grid-area: content;
+    text-align: left;
+}

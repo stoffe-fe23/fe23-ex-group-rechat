@@ -20,3 +20,11 @@ export type ChatMessage = {
     postdate: number | FieldValue,
     content: string
 }
+
+export type ChannelUser = {
+    authid: string,
+    nickname: string,
+    picture: string,
+    channelid: string,
+    activity: number | FieldValue
+}

@@ -1,14 +1,78 @@
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
 import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, FieldValue, Timestamp } from 'firebase/firestore';
-import { ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
+import { ChannelUser, ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
 
 
 
 export const chatApi = firebaseApi.injectEndpoints({
     endpoints: (builder) => ({
-        /* TODO: Listen for users in the active channel */
-        // loadUsers: builder.query<ChannelUser[], string>({
+        /* Listen for users in the active channel */
+        loadUsers: builder.query<ChannelUser[], string>({
+            async queryFn(channelId) {
+                console.log("DEBUG: LOADUSERS START", channelId);
+                try {
+                    const userList: ChannelUser[] = [];
+                    const qry = query(
+                        collection(firebaseDB, "users"),
+                        where('channelid', '==', channelId),
+                        orderBy("nickname", "asc")
+                    );
+
+                    const userDocs = await getDocs(qry);
+                    userDocs.forEach((doc) => {
+                        const usr = doc.data() as ChannelUser;
+                        usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
+                        userList.push(usr);
+                    });
+
+
+                    return { data: userList };
+                }
+                catch (error: any) {
+                    console.error("ERROR IN loadUsers() queryFn()", error);
+                    return { error: error.message };
+                }
+            },
+            // Handle state updates from firestore snapshot updates
+            async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
+                let unsubHandle;
+                try {
+                    console.log("Userslist database listener...", arg);
+
+                    // Look for users in the specified channel
+                    const qry = query(
+                        collection(firebaseDB, "users"),
+                        where('channelid', '==', arg),
+                        orderBy("nickname", "asc")
+                    );
+                    // Set the database listener to receive updates
+                    unsubHandle = onSnapshot(qry, (snapshot) => {
+                        console.log("Channel users onShapshot");
+                        updateCachedData(() => {
+                            const userList = snapshot.docs.map((doc) => {
+                                const usr = doc.data() as ChannelUser;
+                                usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
+                                return usr;
+                            });
+                            console.log("Channel users cache update", userList);
+                            return userList as ChannelUser[];
+                        });
+                    });
+                }
+                catch (error: any) {
+                    console.log('ERROR IN loadUsers() onCacheEntryAdded', error);
+                    throw new Error(`Unable to load channel userlist: ${error.message}`);
+                }
+
+                await cacheEntryRemoved;
+                if (unsubHandle) {
+                    unsubHandle();
+                    console.log("UsersDB UNSUB!");
+                }
+            },
+            providesTags: ['Users'],
+        }),
 
         /**************** MESSAGES ****************/
 
@@ -41,7 +105,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-
+            // Handle state updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
                 let unsubHandle;
                 try {
@@ -54,7 +118,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         orderBy("postdate", "desc"),
                         limit(1000)
                     );
-
+                    // Set the database listener to receive updates
                     unsubHandle = onSnapshot(qry, (snapshot) => {
                         updateCachedData(() => {
                             const msgList = snapshot.docs.map((doc) => {
@@ -63,6 +127,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 msgData.postdate = msgData.postdate != null ? (msgData.postdate as Timestamp).seconds : 0;
                                 return msgData;
                             });
+                            console.log("Message cache update", msgList);
                             return msgList as ChatMessage[];
                         });
                     });
@@ -75,12 +140,13 @@ export const chatApi = firebaseApi.injectEndpoints({
                 await cacheEntryRemoved;
                 if (unsubHandle) {
                     unsubHandle();
+                    console.log("MessageDB UNSUB!");
                 }
             },
             providesTags: ['Messages'],
         }),
 
-        /* Post a new message to the active channel */
+        /* Post a new message to the specified channel by the current user */
         postMessage: builder.mutation<string, NewMessageParams>({
             async queryFn({ channelId, messageContent }) {
                 try {
@@ -94,6 +160,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                             content: messageContent
                         }
                         const newDocRef = await addDoc(collection(firebaseDB, 'messages'), newMsg);
+                        await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
                         console.log("Created new message", newDocRef.id);
                     }
                     else {
@@ -126,7 +193,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['Messages', 'User'],
+            invalidatesTags: ['Messages', 'User', 'Users'],
         }),
 
         /* Leave the specified channel */
@@ -144,7 +211,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['Messages', 'User'],
+            invalidatesTags: ['Messages', 'User', 'Users'],
         }),
 
         /* Join the specified channel */
@@ -177,7 +244,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['Channels', 'User'],
+            invalidatesTags: ['Channels', 'User', 'Users'],
         }),
 
         /* Get a list of data of all existing channels */
@@ -224,4 +291,13 @@ export const chatApi = firebaseApi.injectEndpoints({
     })
 });
 
-export const { useLoadMessagesQuery, useListChannelsQuery, useGetChannelQuery, usePostMessageMutation, useJoinChannelMutation, useLeaveChannelMutation, useCreateChannelMutation } = chatApi;
+export const {
+    useLoadMessagesQuery,
+    useListChannelsQuery,
+    useGetChannelQuery,
+    useLoadUsersQuery,
+    usePostMessageMutation,
+    useJoinChannelMutation,
+    useLeaveChannelMutation,
+    useCreateChannelMutation
+} = chatApi;

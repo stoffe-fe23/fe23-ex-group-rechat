@@ -4,8 +4,9 @@ import ChannelPostMessage from "./ChannelPostMessage";
 import { useUserLoadQuery } from "../datastore/userSlice";
 import { useGetChannelQuery, useJoinChannelMutation } from "../datastore/chatSlice";
 import { useEffect } from "react";
-// import styles from "../styles/FrontPage.module.css";
-// styles['front-page']
+import ChannelUsers from "./CHannelUsers";
+import styles from "../stylesheets/ChannelPage.module.css";
+
 
 export default function ChannelPage(): React.JSX.Element {
 
@@ -20,25 +21,25 @@ export default function ChannelPage(): React.JSX.Element {
 
     useEffect(() => {
         if (channelId && channelId.length && userData && (channelId != userData.channelid)) {
-            console.log("************** JOIN THE BLOODY CHANNEL....");
+            console.log("************** JOIN CHANNEL...");
             joinChannel(channelId);
         }
         else {
-            console.log("############## FFS!!!!", channelId, "user", userData, (channelId != userData?.channelid));
+            console.log("############## ALREADY IN CHANNEL...",);
         }
     }, [userData, joinChannel]);
 
     return (
-        <div className='channel-page'>
-            <div>
-                <h2>{channelData?.name ?? "Untitled channel"}</h2>
-                <div>{channelData?.description ?? ""}</div>
+        <div className={styles['channel-page']}>
+            <div className={styles['channel-page-header']}>
+                <h2 className={styles['channel-page-title']}>{channelData?.name ?? "Untitled channel"}</h2>
+                <div className={styles['channel-page-desc']}>{channelData?.description ?? ""}</div>
             </div>
-            <div>TODO: Participant list...</div>
-            <div>
+            <div className={styles['channel-page-users']}><ChannelUsers channelId={channelId ?? ""} /></div>
+            <div className={styles['channel-page-messages']}>
                 {(userIsLoading || joinIsLoading || channelIsLoading) && <div>Please wait...</div>}
-                <ChannelMessages channelId={channelId ?? ""} />
                 <ChannelPostMessage channelId={channelId ?? ""} />
+                <ChannelMessages channelId={channelId ?? ""} />
             </div>
         </div>
     );

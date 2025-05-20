@@ -1,0 +1,30 @@
+.channel-user {
+    border: 1px solid blue;
+    display: grid;
+    grid-template-areas:
+        "picture name"
+        "picture activity";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0px 0.5rem;
+}
+
+.channel-user-picture {
+    grid-area: picture;
+    width: 45px;
+    height: auto;
+}
+
+.channel-user-name {
+    grid-area: name;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.channel-user-activity {
+    grid-area: activity;
+    font-size: 0.75rem;
+    text-align: left;
+}

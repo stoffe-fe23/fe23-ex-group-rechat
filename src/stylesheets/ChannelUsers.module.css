@@ -1,0 +1,8 @@
+.channel-users {
+    color: white;
+}
+
+.channel-users-list {
+    overflow-y: auto;
+    height: 70vh;
+}
