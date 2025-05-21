@@ -1,12 +1,15 @@
 .channel-message {
-    border: 1px solid green;
     display: grid;
     grid-template-areas:
-        "picture name"
-        "picture date"
-        "content content";
-    grid-template-columns: auto 1fr;
+        "picture name date"
+        "picture content content";
+    grid-template-columns: auto 1fr auto;
+    gap: 0 0.5rem;
     width: 100%;
+    background-color: var(--chat-message-color-bg);
+    color: var(--chat-message-color-text);
+    border-radius: 8px;
+    padding: 0.25rem;
 }
 
 .channel-message-picture {
@@ -19,12 +22,18 @@
     grid-area: name;
     font-weight: 700;
     text-align: left;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--chat-message-color-heading);
 }
 
 .channel-message-date {
     grid-area: date;
     font-size: 0.8rem;
+    font-weight: 400;
     text-align: left;
+    font-family: var(--font-heading);
+    color: var(--chat-message-color-heading);
 }
 
 .channel-message-text {

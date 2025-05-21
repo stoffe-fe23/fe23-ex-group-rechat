@@ -5,4 +5,8 @@
 .channel-users-list {
     overflow-y: auto;
     height: 70vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.2rem;
 }

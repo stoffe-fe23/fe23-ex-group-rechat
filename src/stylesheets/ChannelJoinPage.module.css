@@ -1,0 +1,14 @@
+.channel-join {
+    background-color: var(--tab-active-color-bg);
+    padding: 0.5rem;
+}
+
+.channel-join h2 {
+    margin: 0;
+}
+
+.channel-join-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}

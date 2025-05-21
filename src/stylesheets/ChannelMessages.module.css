@@ -1,9 +1,9 @@
 .channel-messages-list {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.1rem;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
     overflow-y: auto;
-    border: 3px solid black;
-    height: 70vh;
+    height: 74vh;
+    padding: 0.25rem;
 }

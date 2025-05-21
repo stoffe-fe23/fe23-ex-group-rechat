@@ -1,11 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
     box-sizing: border-box;
+}
+
+:root {
+    --body-color-bg: rgba(60, 60, 60, 1.0);
+    --footer-color-bg: grey;
+    --tab-active-color-bg: grey;
+    --tab-active-color-text: white;
+    --tab-inactive-color-bg: lightgrey;
+    --tab-inactive-color-text: black;
+    --user-button-color-bg: rgba(190, 190, 190, 0.8);
+    --user-button-color-text: black;
+    --chat-header-color-bg: grey;
+    --chat-header-color-text: black;
+    --chat-messagelist-color-bg: black;
+    --chat-userlist-color-bg: black;
+    --chat-user-color-bg: rgba(160, 160, 160, 1.0);
+    --chat-user-color-text: black;
+    --chat-message-color-bg: rgba(70, 70, 70, 0.8);
+    --chat-message-color-text: rgba(240, 240, 240, 1.0);
+    --chat-message-color-heading: rgba(170, 170, 170, 1.0);
+    --font-heading: "Roboto Condensed", system-ui, Helvetica, Arial, sans-serif;
+    --font-content: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, Helvetica, Arial, sans-serif;
 }
 
 body {
     margin: 0;
     min-width: 320px;
-    border: 3px solid red;
+    font-family: var(--font-content);
+    background-color: var(--body-color-bg);
+}
+
+a {
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+}
+
+button {
+    font-family: var(--font-heading);
 }
 
 #root {
@@ -21,11 +64,8 @@ body {
 }
 
 header {
-    border: 1px solid red;
-}
-
-footer {
-    border: 1px solid blue;
+    display: flex;
+    justify-content: flex-end;
 }
 
 main {
@@ -36,6 +76,6 @@ main {
 
 }
 
-#main-content {
-    border: 1px solid purple;
+footer {
+    background-color: var(--footer-color-bg);
 }

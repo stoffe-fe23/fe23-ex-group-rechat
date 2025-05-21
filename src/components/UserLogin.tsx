@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUserLoginMutation } from '../datastore/userSlice';
+import { useNavigate } from 'react-router';
 
 
-export default function UserLogin(): React.JSX.Element {
+type UserLoginProps = {
+    isNewUser: boolean
+}
 
+export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Element {
+
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [userLogin, { isLoading, isError, error }] = useUserLoginMutation();
@@ -16,20 +22,23 @@ export default function UserLogin(): React.JSX.Element {
         try {
             const userData = await userLogin({ email, password }).unwrap();
             console.log("LOGIN SUCCESS:", userData);
+            setEmail("");
+            setPassword("");
+            navigate("/channels");
         }
         catch (err) {
             console.log("LOGIN FAILURE:", err);
+            setPassword("");
+            // TODO: Error handling... 
         }
 
-        // Reset login form fields
-        setEmail("");
-        setPassword("");
     }
 
     return (
         <>
             <section>
                 {isLoading && <div>Please wait...</div>}
+                {isNewUser && <div>Thank you for joining! Check your email and click on the link provided to activate your account before logging in.</div>}
                 <form onSubmit={onLoginSubmit}>
                     <div>
                         <label htmlFor="login-email">Email address</label>

@@ -28,28 +28,11 @@ function App() {
     // on login, logoff and page load.
     useEffect(() => {
         onAuthStateChanged(firebaseAuth, (user) => {
-            console.log("onAuthStateChanged()", user);
+            console.log("onAuthStateChanged() load user data", user);
             dispatch(authApi.util.prefetch('userLoad', undefined, { force: true }));
         });
-
+        return () => console.log("APP useEffect return!");
     }, [userData, dispatch]);
-    /*
-    useEffect(() => {
-        onAuthStateChanged(firebaseAuth, (user) => {
-            if (user) {
-                // User logged in - load user info
-                dispatch(userLoad());
-
-                console.log("userLoad() dispatch");
-            } else {
-                // User logged off - unload user info
-                dispatch(userUnload());
-                console.log("userUnload() dispatch");
-            }
-        });
-
-    }, [dispatch]);
-    */
 
     return (
         <>
@@ -60,7 +43,8 @@ function App() {
                 <div id="main-content">
                     <Routes>
                         <Route path="/" element={<><PageTabs activeTab='front' /><FrontPage /></>} />
-                        <Route path="/user/login" element={<><PageTabs activeTab='login' /><UserLogin /></>} />
+                        <Route path="/user/login" element={<><PageTabs activeTab='login' /><UserLogin isNewUser={false} /></>} />
+                        <Route path="/user/login/new" element={<><PageTabs activeTab='login' /><UserLogin isNewUser={true} /></>} />
                         <Route path="/user/register" element={<><PageTabs activeTab='register' /><UserRegister /></>} />
                         <Route path="/user/profile" element={<><PageTabs activeTab='profile' /><UserProfilePage /></>} />
                         <Route path="/channels" element={<><PageTabs activeTab='channels' /><ChannelJoinPage /></>} />

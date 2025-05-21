@@ -9,21 +9,26 @@
 
 .channel-page-header {
     grid-area: header;
-    background-color: rgba(120, 120, 120, 1.0);
+    background-color: var(--chat-header-color-bg);
+    color: var(--chat-header-color-text);
 }
 
-.channel-page-header h2 {
+.channel-page-title {
     margin: 0;
+}
+
+.channel-page-desc {
+    font-size: 0.8rem;
 }
 
 .channel-page-users {
     grid-area: users;
-    background-color: rgb(199, 103, 103);
+    background-color: var(--chat-userlist-color-bg);
 }
 
 .channel-page-messages {
     grid-area: messages;
-    background-color: rgba(180, 180, 180, 1.0);
+    background-color: var(--chat-messagelist-color-bg);
     display: flex;
     flex-direction: column;
 }

@@ -14,17 +14,14 @@
 }
 
 .user-profile-button {
-    border: 3px solid blue;
     width: fit-content;
-    display: flex;
-    justify-content: flex-start;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    gap: 0;
+    background-color: var(--user-button-color-bg);
+    color: var(--user-button-color-text);
+    border-radius: 15px;
+    padding: 0.2rem;
 }
 
-.user-profile-button > a {
-    border: 1px solid blue;
+.user-profile-card > a {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -32,16 +29,17 @@
     padding: 0.3rem;
 }
 
-.logoff-form {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    align-content: center;
-    width: 100%;
-    height: 100%;
-    border: 3px solid orange;
+.logoff-form button {
+    border: 0;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.7rem;
 }
 
-.logoff-form button {
-    border: 3px solid red;
+.logoff-form button:hover {
+    background-color: orange;
+    color: black;
 }

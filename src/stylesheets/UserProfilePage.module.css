@@ -1,3 +1,12 @@
+.user-profile {
+    background-color: var(--tab-active-color-bg);
+}
+
+.user-profile h2 {
+    margin: 0;
+    padding: 0.5rem;
+}
+
 .profile-pic-preview {
     width: 80px;
     height: auto;

@@ -21,18 +21,17 @@ export default function UserProfileButton(): React.JSX.Element {
         <>
             <div className={styles["user-profile-button"]}>
                 {userLogoffIsLoading && <div>Please wait...</div>}
-                {userData && userData.authenticated && <>
+                {userData && userData.authenticated && <div className={styles["user-profile-card"]}>
                     <NavLink to="/user/profile">
                         <img src={userData.picture && userData.picture.length > 0 ? userData.picture : userIconDef} className={styles["picture"]} />
                         <div>
                             <div className={styles["nickname"]}>{userData.nickname ?? "Anonymous"}</div>
-                            <div className={styles["email"]}>{userData.email ?? ""}</div>
+                            <form onSubmit={onLogoffSubmit} className={styles["logoff-form"]}>
+                                <button>Log off</button>
+                            </form>
                         </div>
                     </NavLink>
-                    <form onSubmit={onLogoffSubmit} className={styles["logoff-form"]}>
-                        <button>Log off</button>
-                    </form>
-                </>}
+                </div>}
                 {!userData || !userData.authenticated && <>
                     <img src={userIconNone} />
                     <div>Not logged in</div>

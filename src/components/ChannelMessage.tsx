@@ -1,5 +1,4 @@
 // import { NavLink } from "react-router-dom";
-import { useLoadUsersQuery } from "../datastore/chatSlice";
 import { ChannelUser, ChatMessage } from "../typedefs/chatChannelTypes";
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelMessage.module.css";

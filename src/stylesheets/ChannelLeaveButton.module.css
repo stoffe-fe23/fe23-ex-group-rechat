@@ -1,0 +1,17 @@
+.channel-leave {
+    padding: 0.5rem;
+}
+
+.channel-leave button {
+    border: 0;
+    border-radius: 10px 10px 10px 10px;
+    padding: 0.2rem 0.5rem;
+    background-color: lightseagreen;
+    width: 100%;
+    min-height: 1.5rem;
+    cursor: pointer;
+}
+
+.channel-leave button:hover {
+    background-color: lightsalmon;
+}

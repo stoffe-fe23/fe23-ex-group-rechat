@@ -1,0 +1,21 @@
+.channel-list-item {
+    background-color: black;
+    color: white;
+}
+
+.channel-list-name {
+    margin: 0px;
+    font-size: 1.5rem;
+}
+
+.channel-list-name a {
+    color: orange;
+}
+
+.channel-list-desc {
+    font-size: 0.9rem;
+}
+
+.channel-list-perm {
+    font-size: 0.7rem;
+}

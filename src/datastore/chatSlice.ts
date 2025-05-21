@@ -1,14 +1,15 @@
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
-import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, FieldValue, Timestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp } from 'firebase/firestore';
 import { ChannelUser, ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
 
 
 
 export const chatApi = firebaseApi.injectEndpoints({
     endpoints: (builder) => ({
-        /* Listen for users in the active channel */
+        // Load and update the user list of the specified channel
         loadUsers: builder.query<ChannelUser[], string>({
+            // Load and cache initial data 
             async queryFn(channelId) {
                 console.log("DEBUG: LOADUSERS START", channelId);
                 try {
@@ -26,7 +27,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                         userList.push(usr);
                     });
 
-
                     return { data: userList };
                 }
                 catch (error: any) {
@@ -34,7 +34,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            // Handle state updates from firestore snapshot updates
+            // Handle cache updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
                 let unsubHandle;
                 try {
@@ -76,8 +76,9 @@ export const chatApi = firebaseApi.injectEndpoints({
 
         /**************** MESSAGES ****************/
 
-        /* Listen for messages in the active channel */
+        // Load messages in the specified channel and listen for updates
         loadMessages: builder.query<ChatMessage[], string>({
+            // Load and cache initial message data
             async queryFn(channelId) {
                 console.log("DEBUG: LOADMESSAGES START", channelId);
                 try {
@@ -97,7 +98,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                         messageList.push(msg);
                     });
 
-
                     return { data: messageList };
                 }
                 catch (error: any) {
@@ -105,7 +105,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            // Handle state updates from firestore snapshot updates
+            // Handle cache updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
                 let unsubHandle;
                 try {
@@ -118,7 +118,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         orderBy("postdate", "desc"),
                         limit(1000)
                     );
-                    // Set the database listener to receive updates
+                    // Set the database listener to receive updates in the messages collection
                     unsubHandle = onSnapshot(qry, (snapshot) => {
                         updateCachedData(() => {
                             const msgList = snapshot.docs.map((doc) => {
@@ -146,7 +146,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             providesTags: ['Messages'],
         }),
 
-        /* Post a new message to the specified channel by the current user */
+        // Post a new message to the specified channel by the current user
         postMessage: builder.mutation<string, NewMessageParams>({
             async queryFn({ channelId, messageContent }) {
                 try {
@@ -178,13 +178,19 @@ export const chatApi = firebaseApi.injectEndpoints({
 
         /**************** CHANNELS ****************/
 
-        /* Join the specified channel */
+        // Join the specified channel 
         joinChannel: builder.mutation<string, string>({
             async queryFn(channelId) {
                 try {
                     console.log("DEBUG: JOINCHANNEL START", channelId);
                     if (firebaseAuth.currentUser) {
-                        await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { channelid: channelId ?? "", activity: serverTimestamp() });
+                        const channelDoc = await getDoc(doc(firebaseDB, "channels", channelId));
+                        // const response = await queryApi.dispatch(api.endpoints.getQuote.initiate(someArgsHere))`
+
+                        if (!channelDoc.exists())
+                            throw new Error("Unable to join channel. A channel with the specified ID does not exist.");
+
+                        await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { channelid: channelId, activity: serverTimestamp() });
                     }
                     return { data: "Joined channel " + channelId };
                 }
@@ -196,7 +202,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             invalidatesTags: ['Messages', 'User', 'Users'],
         }),
 
-        /* Leave the specified channel */
+        // Leave the specified channel - no ID needed here since the user can only be in at most one channel.
         leaveChannel: builder.mutation<string, void>({
             async queryFn() {
                 try {
@@ -214,7 +220,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             invalidatesTags: ['Messages', 'User', 'Users'],
         }),
 
-        /* Join the specified channel */
+        // Create and join a new channel 
         createChannel: builder.mutation<string, ChatChannel>({
             async queryFn({ name, description, permanent }) {
                 try {
@@ -247,7 +253,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             invalidatesTags: ['Channels', 'User', 'Users'],
         }),
 
-        /* Get a list of data of all existing channels */
+        // Get a list of all existing channels
         listChannels: builder.query<ChatChannel[], void>({
             async queryFn() {
                 console.log("DEBUG: LISTCHANNELS START");
@@ -270,16 +276,21 @@ export const chatApi = firebaseApi.injectEndpoints({
             providesTags: ['Channels'],
         }),
 
-        /* Get information about a channel */
+        // Get information about a specific channel
         getChannel: builder.query<ChatChannel, string>({
             async queryFn(channelId) {
                 console.log("DEBUG: GETCHANNEL START");
                 try {
-                    const channelDoc = await getDoc(doc(firebaseDB, "channels", channelId));
-                    if (!channelDoc.exists()) {
-                        throw new Error("The specified channel does not exist.");
+                    if ((channelId != undefined) && (channelId.length > 1)) {
+                        const channelDoc = await getDoc(doc(firebaseDB, "channels", channelId));
+                        if (!channelDoc.exists()) {
+                            throw new Error("The specified channel does not exist.");
+                        }
+                        return { data: channelDoc.data() as ChatChannel };
                     }
-                    return { data: channelDoc.data() as ChatChannel };
+                    else {
+                        throw new Error("Unable to load channel information. No channel ID specified.");
+                    }
                 }
                 catch (error: any) {
                     console.error("ERROR IN getChannel() queryFn()", error);

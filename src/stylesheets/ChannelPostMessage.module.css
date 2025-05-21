@@ -1,0 +1,39 @@
+.channel-new-message {
+    padding: 0.5rem;
+}
+
+.channel-new-message form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "content submit";
+    justify-content: start;
+    align-items: center;
+
+}
+
+.channel-new-message input {
+    grid-area: content;
+    border: 0;
+    border-radius: 10px 0px 0px 10px;
+    padding: 0.2rem 0.5rem;
+    min-height: 1.5rem;
+}
+
+.channel-new-message input:focus {
+    outline: 0;
+}
+
+.channel-new-message button {
+    grid-area: submit;
+    border: 0;
+    border-radius: 0px 10px 10px 0px;
+    padding: 0.2rem 0.5rem;
+    background-color: lightblue;
+    cursor: pointer;
+    min-height: 1.5rem;
+}
+
+.channel-new-message button:hover {
+    color: black;
+    background-color: orange;
+}

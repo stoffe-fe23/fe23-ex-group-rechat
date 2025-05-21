@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useUserLoadQuery, useUserLoginMutation } from '../datastore/userSlice';
 import { usePostMessageMutation } from '../datastore/chatSlice';
-
+import styles from "../stylesheets/ChannelPostMessage.module.css";
 
 type ChannelPostMessageProps = {
     channelId: string,
@@ -37,13 +35,13 @@ export default function ChannelPostMessage({ channelId }: ChannelPostMessageProp
 
     return (
         <>
-            <section>
+            <div className={styles['channel-new-message']}>
                 {postIsLoading && <div>Please wait...</div>}
                 <form onSubmit={onMessageSubmit}>
                     <input id="message" name="message" type="text" placeholder="Type your message here" onChange={(evt) => setMessage(evt.target.value)} value={message} required />
                     <button>Send</button>
                 </form>
-            </section>
+            </div>
         </>
     );
 }

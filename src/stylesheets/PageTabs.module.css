@@ -1,0 +1,33 @@
+.page-tabs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+}
+
+.page-tabs a {
+    text-decoration: none;
+}
+
+.page-tabs-tab-active {
+    background-color: var(--tab-active-color-bg);
+    color: var(--tab-active-color-text);
+    padding: 0.3rem;
+}
+
+.page-tabs-tab-active a {
+    color: var(--tab-active-color-text);
+}
+
+.page-tabs-tab {
+    background-color: var(--tab-inactive-color-bg);
+    color: var(--tab-inactive-color-text);
+    padding: 0.3rem;
+}
+
+.page-tabs-tab a {
+    color: var(--tab-inactive-color-text);
+}

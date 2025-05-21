@@ -1,11 +1,13 @@
 import { useState } from "react";
 // import { Link, NavLink } from "react-router-dom";
 import { useCreateChannelMutation } from "../datastore/chatSlice";
+import { useNavigate } from "react-router";
 // import styles from "../styles/FrontPage.module.css";
 // styles['front-page']
 
 export default function ChannelCreatePage(): React.JSX.Element {
 
+    const navigate = useNavigate();
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [permanent, setPermanent] = useState<boolean>(false);
@@ -20,7 +22,7 @@ export default function ChannelCreatePage(): React.JSX.Element {
         try {
             const channelId = await createChannel({ name, description, permanent }).unwrap();
             console.log("New channel created", channelId);
-            // TODO: Go to new channel... 
+            navigate(`/channel/${channelId}`);
         }
         catch (error: any) {
             // TODO: Handle errors...

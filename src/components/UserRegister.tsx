@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import userIconNone from '/usericon-none.png';
 import styles from "../stylesheets/UserRegister.module.css";
 import { useUserRegisterMutation } from '../datastore/userSlice';
+import { useNavigate } from 'react-router';
 
 
 export default function UserRegister(): React.JSX.Element {
 
+    const navigate = useNavigate();
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,6 +30,7 @@ export default function UserRegister(): React.JSX.Element {
             const newUserData = await userRegister({ nickname, email, password }).unwrap();
             console.log("REGISTER NEW USER:", newUserData);
             // TODO: Redirect to login page with message? 
+            navigate("/user/login/new");
         }
         catch (error) {
             console.error("REGISTER NEW USER ERROR!", error, userRegisterError);
