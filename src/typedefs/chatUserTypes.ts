@@ -3,7 +3,7 @@ import { FieldValue } from "firebase/firestore"
 
 
 export type LoginData = {
-    username: string,
+    email: string,
     password: string
 }
 
@@ -29,6 +29,7 @@ export type ChatUserProfile = {
     picture: string,
     nickname: string,
     channelid?: string,
+    lastchannel?: string,
     activity: number | Date | FieldValue
 }
 

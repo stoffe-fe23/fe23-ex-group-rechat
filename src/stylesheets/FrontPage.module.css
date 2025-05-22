@@ -1,0 +1,7 @@
+.page-front {
+    background-color: var(--tab-active-color-bg);
+}
+
+.page-front h2 {
+    margin: 0;
+}

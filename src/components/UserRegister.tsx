@@ -40,36 +40,44 @@ export default function UserRegister(): React.JSX.Element {
 
     return (
         <>
-            <section>
-                <h2>
-                    Create user account
-                </h2>
-                {userRegisterIsLoading && <div>Please wait...</div>}
-                <form onSubmit={onRegisterSubmit}>
-                    <img src={userIconNone} alt="New user icon" />
-                    <div>
-                        <label htmlFor='nickname'>Screen name</label>
-                        <input type="text" id="nickname" name="nickname" value={nickname} onChange={(evt) => setNickname(evt.target.value)}></input>
-                    </div>
-                    <div>
-                        <label htmlFor='email'>E-mail address</label>
-                        <input type="email" id="email" name="email" value={email} onChange={(evt) => setEmail(evt.target.value)}></input>
-                    </div>
-                    <div>
-                        <label htmlFor='password'>Desired password</label>
-                        <input type="password" id="password" name="password" value={password} onChange={(evt) => setPassword(evt.target.value)}></input>
-                    </div>
-                    <div>
-                        <label htmlFor='password-repeat'>Repeat desired password</label>
-                        <input type="password" id="password-repeat" name="password-repeat" value={passwordAgain} onChange={(evt) => setPasswordAgain(evt.target.value)}></input>
-                        <div
-                            className={`${styles['password-match-indicator']} ${password == passwordAgain ? styles['passwords-match'] : styles['passwords-no-match']}`}
-                            id="password-match-indicator"
-                            title={password == passwordAgain ? "Passwords match" : "The passwords you have entered do not match!"}
-                        ></div>
-                    </div>
-                    <div><button>Create</button></div>
-                </form>
+            <section className={styles['register-page']}>
+                <div className={styles['register-leftcol']}>
+                    foo!
+                </div>
+                <div className={styles['register-rightcol']}>
+                    {userRegisterIsLoading && <div>Please wait...</div>}
+
+                    <form onSubmit={onRegisterSubmit} className={styles['register-form']}>
+                        <div>
+                            <img src={userIconNone} alt="New user icon" />
+                            <h2>
+                                Create user account
+                            </h2>
+                        </div>
+                        <div>
+                            <label htmlFor='nickname'>Screen name</label>
+                            <input type="text" id="nickname" name="nickname" value={nickname} onChange={(evt) => setNickname(evt.target.value)}></input>
+                        </div>
+                        <div>
+                            <label htmlFor='email'>E-mail address</label>
+                            <input type="email" id="email" name="email" value={email} onChange={(evt) => setEmail(evt.target.value)}></input>
+                        </div>
+                        <div>
+                            <label htmlFor='password'>Password</label>
+                            <input type="password" id="password" name="password" value={password} onChange={(evt) => setPassword(evt.target.value)}></input>
+                        </div>
+                        <div>
+                            <label htmlFor='password-repeat'>Repeat password</label>
+                            <div
+                                className={`${styles['password-match-indicator']} ${password == passwordAgain ? styles['passwords-match'] : styles['passwords-no-match']}`}
+                                id="password-match-indicator"
+                                title={password == passwordAgain ? "Passwords match" : "The passwords you have entered do not match!"}
+                            ></div>
+                            <input type="password" id="password-repeat" name="password-repeat" value={passwordAgain} onChange={(evt) => setPasswordAgain(evt.target.value)}></input>
+                        </div>
+                        <div><button>Create</button></div>
+                    </form>
+                </div>
             </section>
         </>
     );

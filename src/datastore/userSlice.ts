@@ -1,3 +1,8 @@
+/*
+    Endpoints for managing the current user: Registration, login/logoff, user profile etc. 
+    Uses the Firebase Authentication service for account management, and the Firestore
+    database for keeping extra profile data for easier access to show other users. 
+*/
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { getDoc, doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import {
@@ -18,7 +23,7 @@ import {
     //    reauthenticateWithCredential
 } from "firebase/auth";
 import { firebaseApi } from '../api/firebase-api';
-import { ChatUserProfile, ChatUserData } from '../typedefs/chatUserTypes';
+import { ChatUserProfile, ChatUserData, LoginData } from '../typedefs/chatUserTypes';
 
 
 export const authApi = firebaseApi.injectEndpoints({
@@ -40,7 +45,7 @@ export const authApi = firebaseApi.injectEndpoints({
                         channelid: "",
                         authenticated: false
                     }
-                    if (firebaseAuth.currentUser) {
+                    if (firebaseAuth.currentUser && firebaseAuth.currentUser.emailVerified) {
                         userState.uid = firebaseAuth.currentUser.uid;
                         userState.email = firebaseAuth.currentUser.email ?? "";
                         userState.emailVerified = firebaseAuth.currentUser.emailVerified;
@@ -55,7 +60,7 @@ export const authApi = firebaseApi.injectEndpoints({
                             userState.picture = docUserProfileData.picture ?? "";
                             userState.nickname = docUserProfileData.nickname ?? "Anonymous";
                             userState.channelid = docUserProfileData.channelid;
-                            userState.activity = docUserProfileData.activity.seconds;
+                            userState.activity = docUserProfileData.activity != undefined && docUserProfileData.activity != null ? docUserProfileData.activity.seconds : 0;
                         }
                     }
                     console.log("userLoad()", userState);
@@ -70,11 +75,23 @@ export const authApi = firebaseApi.injectEndpoints({
         }),
 
         /* Log on the user with the specified email and password */
-        userLogin: builder.mutation({
+        userLogin: builder.mutation<string, LoginData>({
             async queryFn({ email, password }) {
                 try {
                     console.log("LOGIN:", email, password);
                     const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+
+                    // If user was in a channel before logging off, get back into it.
+                    if (firebaseAuth.currentUser) {
+                        const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
+                        if (docUserProfile.exists()) {
+                            const currUserData = docUserProfile.data() as ChatUserProfile;
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { lastchannel: "", channelid: currUserData.lastchannel, activity: serverTimestamp() });
+                        }
+                    }
+                    else {
+                        console.log("!!! currentUser not set in userLogin()");
+                    }
 
                     console.log("userLogin()", userCredential.user);
                     return { data: "Login successful." };
@@ -91,8 +108,19 @@ export const authApi = firebaseApi.injectEndpoints({
         userLogout: builder.mutation({
             async queryFn() {
                 try {
-                    await signOut(firebaseAuth);
-                    firebaseAuth.signOut();
+
+                    // Save which channel the user is in, if any, then remove them from it. 
+                    if (firebaseAuth.currentUser) {
+                        const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
+                        if (docUserProfile.exists()) {
+                            const currUserData = docUserProfile.data() as ChatUserProfile;
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { lastchannel: currUserData.channelid, channelid: "", activity: serverTimestamp() });
+                        }
+                    }
+
+                    // Log off the user.
+                    await signOut(firebaseAuth).catch((err) => console.error("FN SIGNOUT ERROR!", err));
+                    await firebaseAuth.signOut().catch((err) => console.error("OBJ SIGNOUT ERROR!", err));;
                     console.log("userLogoff()", firebaseAuth.currentUser);
                     return { data: "Logout successful." };
                 }
@@ -178,10 +206,15 @@ export const authApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['User'],
+            invalidatesTags: ['User', 'Profiles'],
         }),
-        /* TODO: joinChannel(), leaveChannel() here? */
     })
 });
 
-export const { useUserLoadQuery, useUserLoginMutation, useUserLogoutMutation, useUserRegisterMutation, useUserEditMutation } = authApi;
+export const {
+    useUserLoadQuery,
+    useUserLoginMutation,
+    useUserLogoutMutation,
+    useUserRegisterMutation,
+    useUserEditMutation
+} = authApi;

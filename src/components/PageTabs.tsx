@@ -26,7 +26,7 @@ export default function PageTabs({ activeTab }: PageTabsProps): React.JSX.Elemen
 
     return (
         <>
-            <div className={styles['page-tabs']}>
+            {userData?.authenticated && <div className={styles['page-tabs']}>
                 <div className={userTab.includes(activeTab) ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
                     <NavLink to="/user/profile">User profile</NavLink>
                 </div>
@@ -34,7 +34,7 @@ export default function PageTabs({ activeTab }: PageTabsProps): React.JSX.Elemen
                     <NavLink to="/channels">Channels</NavLink>
                 </div>
                 {isInChannel && <div className={activeTab == "channel" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}><NavLink to={`/channel/${channelId}`}>Channel: {channelData.name.slice(0, 100)}</NavLink></div>}
-            </div>
+            </div>}
         </>
 
     );

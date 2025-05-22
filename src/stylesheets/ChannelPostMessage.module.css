@@ -16,7 +16,7 @@
     border: 0;
     border-radius: 10px 0px 0px 10px;
     padding: 0.2rem 0.5rem;
-    min-height: 1.5rem;
+    min-height: 2rem;
 }
 
 .channel-new-message input:focus {
@@ -30,10 +30,19 @@
     padding: 0.2rem 0.5rem;
     background-color: lightblue;
     cursor: pointer;
-    min-height: 1.5rem;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
 }
 
 .channel-new-message button:hover {
     color: black;
     background-color: orange;
+}
+
+.channel-new-button-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 0.2rem 0 0;
+    padding: 0;
 }

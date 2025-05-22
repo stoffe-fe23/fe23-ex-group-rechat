@@ -4,8 +4,9 @@
 }
 
 .nickname {
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: left;
+    margin: 0;
 }
 
 .email {
@@ -21,25 +22,56 @@
     padding: 0.2rem;
 }
 
-.user-profile-card > a {
-    display: flex;
-    justify-content: flex-start;
+.user-profile-card {
+    display: grid;
+    justify-content: end;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0 0.7rem;
     padding: 0.3rem;
+    grid-template-areas: "picture nickname" "picture logoff";
+    grid-template-rows: 1fr auto;
 }
+
+.picture-link {
+    grid-area: picture;
+}
+
+.nickname-link {
+    grid-area: nickname;
+}
+
+.logoff-form {
+    grid-area: logoff;
+    text-align: right;
+}
+
 
 .logoff-form button {
     border: 0;
     border-radius: 8px;
-    background-color: black;
-    color: white;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
     padding: 0.25rem 0.5rem;
     cursor: pointer;
     font-size: 0.7rem;
 }
 
 .logoff-form button:hover {
-    background-color: orange;
-    color: black;
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+}
+
+.login-link {
+    border: 0;
+    border-radius: 8px;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.login-link:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
 }

@@ -1,6 +1,13 @@
 .channel-list-item {
     background-color: black;
     color: white;
+    padding: 1rem;
+    width: 45%;
+    border-radius: 10px;
+}
+
+.channel-list-item > a {
+    display: block;
 }
 
 .channel-list-name {
@@ -8,14 +15,16 @@
     font-size: 1.5rem;
 }
 
-.channel-list-name a {
+.channel-list-name {
     color: orange;
 }
 
 .channel-list-desc {
     font-size: 0.9rem;
+    color: white;
 }
 
 .channel-list-perm {
     font-size: 0.7rem;
+    color: lightgray;
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePostMessageMutation } from '../datastore/chatSlice';
 import styles from "../stylesheets/ChannelPostMessage.module.css";
+import iconTalk from "/icons/icon-talk-add.png";
 
 type ChannelPostMessageProps = {
     channelId: string,
@@ -39,7 +40,7 @@ export default function ChannelPostMessage({ channelId }: ChannelPostMessageProp
                 {postIsLoading && <div>Please wait...</div>}
                 <form onSubmit={onMessageSubmit}>
                     <input id="message" name="message" type="text" placeholder="Type your message here" onChange={(evt) => setMessage(evt.target.value)} value={message} required />
-                    <button>Send</button>
+                    <button><img className={styles['channel-new-button-icon']} src={iconTalk} /> Send</button>
                 </form>
             </div>
         </>

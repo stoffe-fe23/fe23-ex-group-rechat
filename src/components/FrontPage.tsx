@@ -1,12 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
-// import styles from "../styles/FrontPage.module.css";
-// styles['front-page']
+import styles from "../stylesheets/FrontPage.module.css";
+
 
 export default function FrontPage(): React.JSX.Element {
 
 
     return (
-        <div className='front-page'>
+        <div className={styles['page-front']}>
             <h2 className="front-heading">Front Page</h2>
             <ul>
                 <li>

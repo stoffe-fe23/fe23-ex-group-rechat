@@ -15,10 +15,11 @@
 
 .channel-page-title {
     margin: 0;
+    font-size: 1.6rem;
 }
 
 .channel-page-desc {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .channel-page-users {

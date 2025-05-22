@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './datastore/hooks';
-// import { selectUserData, userLoad, userUnload } from './datastore/sliceChatUser';
 import UserLogin from './components/UserLogin';
 import UserProfileButton from './components/UserProfileButton';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -20,20 +18,19 @@ import { authApi, useUserLoadQuery } from './datastore/userSlice';
 
 function App() {
     const dispatch = useAppDispatch();
-    // const userData = useAppSelector(selectUserData);
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
 
 
-    // Initialize user authentication observer
-    // on login, logoff and page load.
+    // User authentication observer to preserve user session if reloading page, closing the tab then returning etc
     useEffect(() => {
+        console.log("APP USEEFFECT RUNNING...");
         onAuthStateChanged(firebaseAuth, (user) => {
             console.log("onAuthStateChanged() load user data", user);
             dispatch(authApi.util.prefetch('userLoad', undefined, { force: true }));
         });
-        return () => console.log("APP useEffect return!");
     }, [userData, dispatch]);
 
+    // Main App component with SPA page router.
     return (
         <>
             <main id="page" aria-live="assertive">

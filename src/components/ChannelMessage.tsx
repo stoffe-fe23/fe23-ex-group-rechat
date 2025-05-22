@@ -1,5 +1,5 @@
 // import { NavLink } from "react-router-dom";
-import { ChannelUser, ChatMessage } from "../typedefs/chatChannelTypes";
+import { ChannelUserProfile, ChatMessage } from "../typedefs/chatChannelTypes";
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelMessage.module.css";
 // styles['front-page']
@@ -7,7 +7,7 @@ import styles from "../stylesheets/ChannelMessage.module.css";
 
 type ChannelMessageProps = {
     messageData: ChatMessage,
-    authorData: ChannelUser
+    authorData: ChannelUserProfile
 }
 
 function timestampToDateString(time: number, locale: string = 'sv-SE') {
@@ -19,7 +19,7 @@ function timestampToDateString(time: number, locale: string = 'sv-SE') {
 export default function ChannelMessage({ messageData, authorData }: ChannelMessageProps): React.JSX.Element {
 
     if ((authorData == undefined) || (authorData == null)) {
-        authorData = { authid: "", nickname: "Anonymous", picture: "", channelid: messageData.channelid, activity: 0 };
+        authorData = { authid: "", nickname: "Anonymous", picture: "" };
     }
 
     return (

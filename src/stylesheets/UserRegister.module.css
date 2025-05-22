@@ -1,7 +1,9 @@
 .password-match-indicator {
-    width: 32px;
-    height: 32px;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
+    margin-left: 0.5rem;
 }
 
 .passwords-match {
@@ -10,4 +12,54 @@
 
 .passwords-no-match {
     background-color: red;
+}
+
+.register-page {
+    background-color: var(--tab-active-color-bg);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    height: 60vh;
+}
+
+.register-leftcol {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/dummy-image1.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+
+.register-rightcol {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-page h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.register-form {
+    background-color: white;
+    width: 250px;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 3px 3px 12px rgba(10, 10, 10, 0.4);
+}
+
+.register-form img {
+    width: 80px;
+    height: auto;
 }

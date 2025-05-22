@@ -1,7 +1,11 @@
+/*
+    Endpoints for managing chat channels, messages and participating users.
+    Uses the Firebase Firestore database service to store data about channels and messages. 
+*/
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
 import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp } from 'firebase/firestore';
-import { ChannelUser, ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
+import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
 
 
 
@@ -73,8 +77,6 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             providesTags: ['Users'],
         }),
-
-        /**************** MESSAGES ****************/
 
         // Load messages in the specified channel and listen for updates
         loadMessages: builder.query<ChatMessage[], string>({
@@ -175,8 +177,6 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             invalidatesTags: ['Messages'],
         }),
-
-        /**************** CHANNELS ****************/
 
         // Join the specified channel 
         joinChannel: builder.mutation<string, string>({
@@ -299,6 +299,39 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             providesTags: ['Channel'], // TODO: Check if this works, of if it will only cache a single channel regardless of channelid param... 
         }),
+
+        // Get a list of all user profiles for resolving name and picture from UIDs
+        getUserProfileList: builder.query<ChannelUserProfile[], void>({
+            async queryFn() {
+                console.log("DEBUG: GETUSERPROFILELIST START");
+                try {
+                    const profileList: ChannelUserProfile[] = [];
+                    const qry = query(
+                        collection(firebaseDB, "users"),
+                        orderBy("nickname", "asc")
+                    );
+
+
+                    const userDocs = await getDocs(qry);
+                    userDocs.forEach((doc) => {
+                        const usr = doc.data() as ChannelUserProfile;
+                        const profile: ChannelUserProfile = {
+                            authid: doc.id,
+                            nickname: usr.nickname,
+                            picture: usr.picture
+                        }
+                        profileList.push(profile);
+                    });
+
+                    return { data: profileList };
+                }
+                catch (error: any) {
+                    console.error("ERROR IN getUserProfileList() queryFn()", error);
+                    return { error: error.message };
+                }
+            },
+            providesTags: ['Profiles'],
+        }),
     })
 });
 
@@ -307,6 +340,7 @@ export const {
     useListChannelsQuery,
     useGetChannelQuery,
     useLoadUsersQuery,
+    useGetUserProfileListQuery,
     usePostMessageMutation,
     useJoinChannelMutation,
     useLeaveChannelMutation,

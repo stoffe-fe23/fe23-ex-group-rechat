@@ -28,3 +28,9 @@ export type ChannelUser = {
     channelid: string,
     activity: number | FieldValue
 }
+
+export type ChannelUserProfile = {
+    authid: string,
+    nickname: string,
+    picture: string,
+}

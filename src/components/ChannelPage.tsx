@@ -17,6 +17,7 @@ export default function ChannelPage(): React.JSX.Element {
     const { data: channelData, isLoading: channelIsLoading, isError: channelIsError, error: channelError } = useGetChannelQuery(channelId ?? "");
     const [joinChannel, { isLoading: joinIsLoading, isError: joinIsError, error: joinError }] = useJoinChannelMutation();
 
+    // Current user joins the channel if they are not already in it. 
     useEffect(() => {
         if (channelId && channelId.length && userData && (channelId != userData.channelid)) {
             console.log("************** JOIN CHANNEL...");

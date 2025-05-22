@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styles from "../stylesheets/ChannelListItem.module.css";
+import iconChannel from '/icons/icon-channel.png';
 
 
 type ChannelProps = {
@@ -14,9 +15,12 @@ export default function ChannelListItem({ channelId, channelName, channelDescrip
 
     return (
         <div className={styles['channel-list-item']}>
-            <h3 className={styles['channel-list-name']}><NavLink to={`/channel/${channelId}`}>{channelName}</NavLink></h3>
-            <div className={styles['channel-list-desc']}>{channelDescription}</div>
-            <div className={styles['channel-list-perm']}>{channelIsPermanent ? "Permanent" : ""}</div>
+            <NavLink to={`/channel/${channelId}`}>
+                <img className={styles['channel-list-icon']} src={iconChannel} alt="Channel icon" />
+                <h3 className={styles['channel-list-name']}>{channelName}</h3>
+                <div className={styles['channel-list-desc']}>{channelDescription}</div>
+                <div className={styles['channel-list-perm']}>{channelIsPermanent ? "Permanent" : ""}</div>
+            </NavLink>
         </div>
     );
 }

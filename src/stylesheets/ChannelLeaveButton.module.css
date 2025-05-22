@@ -6,12 +6,14 @@
     border: 0;
     border-radius: 10px 10px 10px 10px;
     padding: 0.2rem 0.5rem;
-    background-color: lightseagreen;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
     width: 100%;
     min-height: 1.5rem;
     cursor: pointer;
 }
 
 .channel-leave button:hover {
-    background-color: lightsalmon;
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
 }

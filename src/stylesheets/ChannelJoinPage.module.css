@@ -9,6 +9,23 @@
 
 .channel-join-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-evenly;
     gap: 0.2rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.channel-create {
+    display: block;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.channel-create:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
 }
