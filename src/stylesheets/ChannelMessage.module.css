@@ -2,14 +2,47 @@
     display: grid;
     grid-template-areas:
         "picture name date"
-        "picture content content";
+        "picture content content"
+        "ops ops ops";
     grid-template-columns: auto 1fr auto;
     gap: 0 0.5rem;
     width: 100%;
     background-color: var(--chat-message-color-bg);
     color: var(--chat-message-color-text);
     border-radius: 8px;
-    padding: 0.25rem;
+    padding: 0.3rem;
+}
+
+.channel-message-ops {
+    grid-area: ops;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.1rem 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.channel-message-ops button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 0;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    border-radius: 10px;
+}
+
+.channel-message-ops button:hover {
+    cursor: pointer;
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+}
+
+.channel-message-ops button img {
+    width: 18px;
+    height: 18px;
 }
 
 .channel-message-picture {

@@ -4,8 +4,8 @@
 */
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
-import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp } from 'firebase/firestore';
-import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, NewMessageParams } from '../typedefs/chatChannelTypes';
+import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp, deleteDoc } from 'firebase/firestore';
+import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, EditMessageParams, NewMessageParams } from '../typedefs/chatChannelTypes';
 
 
 
@@ -95,7 +95,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     const messageDocs = await getDocs(qry);
                     messageDocs.forEach((doc) => {
                         const msg = doc.data() as ChatMessage;
-                        msg.channelid = doc.id;
+                        msg.messageid = doc.id;
                         msg.postdate = msg.postdate != null ? (msg.postdate as Timestamp).seconds : 0;
                         messageList.push(msg);
                     });
@@ -152,18 +152,24 @@ export const chatApi = firebaseApi.injectEndpoints({
         postMessage: builder.mutation<string, NewMessageParams>({
             async queryFn({ channelId, messageContent }) {
                 try {
-                    // TODO: Check that the channel with the specified ID actually exists
+                    // Check that the channel with the specified ID actually exists
                     console.log("DEBUG: POSTMESSAGE START", channelId);
                     if (firebaseAuth.currentUser) {
-                        const newMsg: ChatMessage = {
-                            author: firebaseAuth.currentUser.uid,
-                            channelid: channelId,
-                            postdate: serverTimestamp(),
-                            content: messageContent
+                        const chanDoc = await getDoc(doc(firebaseDB, "channels", channelId));
+                        if (chanDoc.exists()) {
+                            const newMsg: ChatMessage = {
+                                author: firebaseAuth.currentUser.uid,
+                                channelid: channelId,
+                                postdate: serverTimestamp(),
+                                content: messageContent
+                            }
+                            const newDocRef = await addDoc(collection(firebaseDB, 'messages'), newMsg);
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
+                            console.log("Created new message", newDocRef.id);
                         }
-                        const newDocRef = await addDoc(collection(firebaseDB, 'messages'), newMsg);
-                        await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
-                        console.log("Created new message", newDocRef.id);
+                        else {
+                            throw new Error("There is no channel with the specified channel ID.")
+                        }
                     }
                     else {
                         throw new Error("You must be logged in to post a new message.");
@@ -172,6 +178,90 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("postMessage() ERROR", error);
+                    return { error: error.message };
+                }
+            },
+            invalidatesTags: ['Messages'],
+        }),
+
+        // Edit a message originally posted by the current user
+        editMessage: builder.mutation<string, EditMessageParams>({
+            async queryFn({ messageId, messageContent }) {
+                try {
+                    console.log("DEBUG: EDITMESSAGE START", messageId, messageContent);
+                    if (messageId.length > 0) {
+                        if (firebaseAuth.currentUser) {
+                            // Check that the specified message actually exists.
+                            const msgDoc = await getDoc(doc(firebaseDB, "messages", messageId));
+                            if (msgDoc.exists()) {
+                                const msg = msgDoc.data() as ChatMessage;
+                                // Check that the message to edit was created by the user. 
+                                if (msg && msg.author && (msg.author == firebaseAuth.currentUser.uid)) {
+                                    await updateDoc(doc(firebaseDB, "messages", messageId), { content: messageContent });
+                                    await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
+                                    console.log("Edit message", messageId, messageContent);
+                                }
+                                else {
+                                    throw new Error("You may only edit messages you have posted.");
+                                }
+                            }
+                            else {
+                                throw new Error("No message exists with the specified message ID.");
+                            }
+                        }
+                        else {
+                            throw new Error("You must be logged in to edit a message.");
+                        }
+                    }
+                    else {
+                        throw new Error("No ID specified for message to edit.");
+                    }
+                    return { data: messageContent };
+                }
+                catch (error: any) {
+                    console.error("editMessage() ERROR", error);
+                    return { error: error.message };
+                }
+            },
+            invalidatesTags: ['Messages'],
+        }),
+
+        // Delete a message by the current user
+        deleteMessage: builder.mutation<string, string>({
+            async queryFn(messageId) {
+                try {
+                    console.log("DEBUG: DELETEMESSAGE START", messageId);
+                    if (messageId.length > 0) {
+                        if (firebaseAuth.currentUser) {
+                            // Check that the specified message actually exists.
+                            const msgDoc = await getDoc(doc(firebaseDB, "messages", messageId));
+                            if (msgDoc.exists()) {
+                                const msg = msgDoc.data() as ChatMessage;
+                                // Check that the message to delete was created by the user. 
+                                if (msg && msg.author && (msg.author == firebaseAuth.currentUser.uid)) {
+                                    await deleteDoc(doc(firebaseDB, "messages", messageId));
+                                    await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
+                                    console.log("Deleted message", messageId);
+                                }
+                                else {
+                                    throw new Error("You may only delete messages you have posted.");
+                                }
+                            }
+                            else {
+                                throw new Error("No message exists with the specified message ID.");
+                            }
+                        }
+                        else {
+                            throw new Error("You must be logged in to delete a message.");
+                        }
+                    }
+                    else {
+                        throw new Error("No ID specified for message to delete");
+                    }
+                    return { data: `Message deleted: ${messageId}` };
+                }
+                catch (error: any) {
+                    console.error("deleteMEssage() ERROR", error);
                     return { error: error.message };
                 }
             },
@@ -342,6 +432,8 @@ export const {
     useLoadUsersQuery,
     useGetUserProfileListQuery,
     usePostMessageMutation,
+    useEditMessageMutation,
+    useDeleteMessageMutation,
     useJoinChannelMutation,
     useLeaveChannelMutation,
     useCreateChannelMutation

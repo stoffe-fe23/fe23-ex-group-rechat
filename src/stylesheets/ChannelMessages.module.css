@@ -2,8 +2,9 @@
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    gap: 0.25rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
     overflow-y: auto;
-    height: 74vh;
-    padding: 0.25rem;
+    scrollbar-color: var(--chat-header-color-bg) var(--chat-messagelist-color-bg);
+    scrollbar-width: thin;
 }

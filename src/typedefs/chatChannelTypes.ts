@@ -5,6 +5,11 @@ export type NewMessageParams = {
     messageContent: string
 }
 
+export type EditMessageParams = {
+    messageId: string,
+    messageContent: string
+}
+
 export type ChatChannel = {
     channelid?: string,
     name: string,

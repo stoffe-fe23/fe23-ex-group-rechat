@@ -1,6 +1,10 @@
 .channel-join {
     background-color: var(--tab-active-color-bg);
     padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .channel-join h2 {
@@ -14,6 +18,7 @@
     gap: 0.2rem;
     margin-top: 1rem;
     margin-bottom: 2rem;
+    width: 100%;
 }
 
 .channel-create {
@@ -23,6 +28,7 @@
     padding: 0.5rem 1rem;
     border-radius: 12px;
     margin-top: 1rem;
+    width: fit-content;
 }
 
 .channel-create:hover {

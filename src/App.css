@@ -18,8 +18,8 @@
     --chat-header-color-text: black;
     --chat-messagelist-color-bg: black;
     --chat-userlist-color-bg: black;
-    --chat-user-color-bg: rgba(160, 160, 160, 1.0);
-    --chat-user-color-text: black;
+    --chat-user-color-bg: rgb(100, 100, 100);
+    --chat-user-color-text: white;
     --chat-message-color-bg: rgba(70, 70, 70, 0.8);
     --chat-message-color-text: rgba(240, 240, 240, 1.0);
     --chat-message-color-heading: rgba(170, 170, 170, 1.0);
@@ -71,20 +71,30 @@ button {
     justify-content: space-between;
 }
 
-header {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 0.5rem;
+#page {
+    display: grid;
+    grid-template-areas: "header" "main" "footer";
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    height: 100vh;
 }
 
-main {
-    position: relative;
+header {
+    grid-area: header;
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0;
+    margin-top: 0.25rem;
+}
 
+#main-content {
+    grid-area: main;
+    overflow: auto;
+    position: relative;
 }
 
 footer {
+    grid-area: footer;
     background-color: var(--footer-color-bg);
 }

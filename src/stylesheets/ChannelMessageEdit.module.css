@@ -1,0 +1,40 @@
+.edit-message-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.edit-message-form textarea {
+    width: 100%;
+    border: 0;
+    border-radius: 12px 12px 0px 0px;
+    resize: vertical;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.edit-message-form textarea:focus {
+    outline: 0;
+}
+
+.edit-message-form button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    border: 0;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    border-radius: 0px 0px 12px 12px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+}
+
+.edit-message-form button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+}
+
+.edit-message-form button img {
+    width: 18px;
+    height: 18px;
+}

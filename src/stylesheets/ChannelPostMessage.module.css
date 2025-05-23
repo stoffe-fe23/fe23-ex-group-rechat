@@ -28,7 +28,8 @@
     border: 0;
     border-radius: 0px 10px 10px 0px;
     padding: 0.2rem 0.5rem;
-    background-color: lightblue;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
     cursor: pointer;
     min-height: 2rem;
     display: flex;
@@ -36,8 +37,8 @@
 }
 
 .channel-new-message button:hover {
-    color: black;
-    background-color: orange;
+    color: var(--button-hover-text);
+    background-color: var(--button-hover-bg);
 }
 
 .channel-new-button-icon {

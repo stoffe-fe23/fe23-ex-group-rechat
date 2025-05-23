@@ -10,10 +10,7 @@ type ChannelPostMessageProps = {
 export default function ChannelPostMessage({ channelId }: ChannelPostMessageProps): React.JSX.Element {
 
     const [message, setMessage] = useState('');
-
-    //  const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
     const [postMessage, { isLoading: postIsLoading, isError: postIsError, error: postError }] = usePostMessageMutation();
-
 
     async function onMessageSubmit(event: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();

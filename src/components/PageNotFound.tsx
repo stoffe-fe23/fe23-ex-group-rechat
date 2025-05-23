@@ -1,4 +1,5 @@
 import { useLocation, Location as RouterLocation } from "react-router";
+import PageTabs from "./PageTabs";
 
 export default function PageNotFound(): React.JSX.Element {
 
@@ -6,8 +7,10 @@ export default function PageNotFound(): React.JSX.Element {
 
     return (
         <>
-            <h2>Not found</h2>
-            <p>The page <strong className="page-not-found">{path.pathname}</strong> could not be found.</p>
+            <section>
+                <h2>Not found</h2>
+                <p>The page <strong className="page-not-found">{path.pathname}</strong> could not be found.</p>
+            </section>
         </>
     );
 }

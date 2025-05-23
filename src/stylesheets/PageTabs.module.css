@@ -15,7 +15,8 @@
 .page-tabs-tab-active {
     background-color: var(--tab-active-color-bg);
     color: var(--tab-active-color-text);
-    padding: 0.3rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 10px 10px 0px 0px;
 }
 
 .page-tabs-tab-active a {
@@ -25,7 +26,8 @@
 .page-tabs-tab {
     background-color: var(--tab-inactive-color-bg);
     color: var(--tab-inactive-color-text);
-    padding: 0.3rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 10px 10px 0px 0px;
 }
 
 .page-tabs-tab a {

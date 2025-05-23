@@ -1,16 +1,28 @@
+/*
 .channel-page {
+    position: relative;
     display: grid;
     grid-template-areas: "header header" "users messages";
     grid-template-columns: 200px auto;
     grid-template-rows: auto 1fr;
     align-items: stretch;
     justify-items: stretch;
+    border: 2px solid yellow;
+}
+    */
+.channel-page {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
 }
 
 .channel-page-header {
-    grid-area: header;
+    /* grid-area: header; */
     background-color: var(--chat-header-color-bg);
     color: var(--chat-header-color-text);
+    height: 50px;
 }
 
 .channel-page-title {
@@ -22,14 +34,39 @@
     font-size: 0.75rem;
 }
 
+.channel-page-content {
+    /*
+    grid-template-areas: "userlist messages";
+    grid-template-columns: 200px auto;
+    align-items: stretch;
+    justify-items: stretch;
+    height: 100%;
+*/
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+
 .channel-page-users {
-    grid-area: users;
+    grid-area: userlist;
     background-color: var(--chat-userlist-color-bg);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 225px;
 }
 
 .channel-page-messages {
     grid-area: messages;
     background-color: var(--chat-messagelist-color-bg);
+    position: absolute;
+    top: 0px;
+    left: 225px;
+    bottom: 0px;
+    right: 0px;
     display: flex;
     flex-direction: column;
 }

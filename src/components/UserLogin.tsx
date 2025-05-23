@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { LoginData } from '../typedefs/chatUserTypes';
 import styles from "../stylesheets/UserLogin.module.css";
 import iconDefUser from "/usericon-default.png";
+import PageTabs from './PageTabs';
 
 
 type UserLoginProps = {

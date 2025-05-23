@@ -1,4 +1,4 @@
-import { Link, NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ChannelMessages from "./ChannelMessages";
 import ChannelPostMessage from "./ChannelPostMessage";
 import { useUserLoadQuery } from "../datastore/userSlice";
@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import ChannelUsers from "./ChannelUsers";
 import styles from "../stylesheets/ChannelPage.module.css";
 import ChannelLeaveButton from "./ChannelLeaveButton";
+import PageTabs from "./PageTabs";
 
 
 export default function ChannelPage(): React.JSX.Element {
@@ -29,21 +30,25 @@ export default function ChannelPage(): React.JSX.Element {
     }, [userData, joinChannel]);
 
     return (
-        <div className={styles['channel-page']}>
-            <div className={styles['channel-page-header']}>
-                <h2 className={styles['channel-page-title']}>{channelData?.name ?? "Untitled channel"}</h2>
-                <div className={styles['channel-page-desc']}>{channelData?.description ?? ""}</div>
-            </div>
-            <div className={styles['channel-page-users']}>
-                {(userIsLoading) && <div>Please wait...</div>}
-                <ChannelLeaveButton />
-                <ChannelUsers channelId={channelId ?? ""} />
-            </div>
-            <div className={styles['channel-page-messages']}>
-                <ChannelPostMessage channelId={channelId ?? ""} />
-                {(joinIsLoading || channelIsLoading) && <div>Please wait...</div>}
-                <ChannelMessages channelId={channelId ?? ""} />
-            </div>
-        </div>
+        <>
+            <section className={styles['channel-page']}>
+                <div className={styles['channel-page-header']}>
+                    <h2 className={styles['channel-page-title']}>{channelData?.name ?? "Untitled channel"}</h2>
+                    <div className={styles['channel-page-desc']}>{channelData?.description ?? ""}</div>
+                </div>
+                <div className={styles['channel-page-content']}>
+                    <div className={styles['channel-page-users']}>
+                        {(userIsLoading) && <div>Please wait...</div>}
+                        <ChannelLeaveButton />
+                        <ChannelUsers channelId={channelId ?? ""} />
+                    </div>
+                    <div className={styles['channel-page-messages']}>
+                        <ChannelPostMessage channelId={channelId ?? ""} />
+                        {(joinIsLoading || channelIsLoading) && <div>Please wait...</div>}
+                        <ChannelMessages channelId={channelId ?? ""} />
+                    </div>
+                </div>
+            </section>
+        </>
     );
 }

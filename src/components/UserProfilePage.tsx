@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/UserProfilePage.module.css";
 import { useUserEditMutation, useUserLoadQuery } from '../datastore/userSlice';
+import PageTabs from './PageTabs';
 
 
 export default function UserProfilePage(): React.JSX.Element {

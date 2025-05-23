@@ -4,6 +4,7 @@ import userIconNone from '/usericon-none.png';
 import styles from "../stylesheets/UserRegister.module.css";
 import { useUserRegisterMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
+import PageTabs from './PageTabs';
 
 
 export default function UserRegister(): React.JSX.Element {
