@@ -2,6 +2,10 @@
 import { ChannelUser, ChatMessage } from "../typedefs/chatChannelTypes";
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelUserItem.module.css";
+import { useEffect, useState } from "react";
+
+// If the user has done anything within the 15 minutes they are considered Active
+const ACTIVITY_THRESHOLD = (1000 * 60 * 15);
 
 type ChannelUserItemProps = {
     userData: ChannelUser
@@ -12,11 +16,25 @@ function timestampToDateString(time: number, locale: string = 'sv-SE') {
     return `${dateObj.toLocaleDateString(locale)} ${dateObj.toLocaleTimeString(locale)}`;
 }
 
+function getIsUserActive(userData: ChannelUser, threshold: number): boolean {
+    return ((userData.activity as number) * 1000) > (Date.now() - threshold);
+}
+
 
 export default function ChannelUserItem({ userData }: ChannelUserItemProps): React.JSX.Element {
 
-    // If the user has done anything within the last hour they are considered Active
-    const userIsActive: boolean = ((userData.activity as number) * 1000) > (Date.now() - (1000 * 60 * 60));
+    // If the user has done something within the time threshold they are considered Active
+    const [userIsActive, setUserIsActive] = useState<boolean>(getIsUserActive(userData, ACTIVITY_THRESHOLD));
+
+    useEffect(() => {
+        // Update user Active status every 10 seconds
+        const activityTimer = setInterval(() => setUserIsActive(getIsUserActive(userData, ACTIVITY_THRESHOLD)), 5000);
+        console.log("User Activity Timer setup...", activityTimer);
+        return () => {
+            console.log("User Activity Timer cleanup...", userData.nickname, activityTimer);
+            clearInterval(activityTimer)
+        };
+    }, [userData]);
 
     return (
         <div className={styles['channel-user']}>

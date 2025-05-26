@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import './App.css';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, useBeforeUnload } from 'react-router-dom';
 import { useAppDispatch } from './datastore/hooks';
 import UserLogin from './components/UserLogin';
 import UserProfileButton from './components/UserProfileButton';
@@ -20,6 +20,12 @@ function App() {
     const dispatch = useAppDispatch();
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
 
+
+    useBeforeUnload((evt) => {
+        // TODO: Mark current user as inactive, if logged on
+        // If this is even possible, seems like you can't expect any async functionality, like DB/API calls, 
+        // here to finish running before the page closes.
+    });
 
     // User authentication observer to preserve user session if reloading page, closing the tab then returning etc
     useEffect(() => {
@@ -57,4 +63,4 @@ function App() {
     )
 }
 
-export default App
+export default App;

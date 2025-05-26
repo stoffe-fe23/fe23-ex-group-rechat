@@ -31,7 +31,8 @@ export type ChannelUser = {
     nickname: string,
     picture: string,
     channelid: string,
-    activity: number | FieldValue
+    activity: number | FieldValue,
+    isactive: boolean
 }
 
 export type ChannelUserProfile = {

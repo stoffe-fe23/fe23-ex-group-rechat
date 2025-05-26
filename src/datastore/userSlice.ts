@@ -43,7 +43,8 @@ export const authApi = firebaseApi.injectEndpoints({
                         creationTime: "",
                         lastSignInTime: "",
                         channelid: "",
-                        authenticated: false
+                        authenticated: false,
+                        isactive: false
                     }
                     if (firebaseAuth.currentUser && firebaseAuth.currentUser.emailVerified) {
                         userState.uid = firebaseAuth.currentUser.uid;
@@ -61,6 +62,12 @@ export const authApi = firebaseApi.injectEndpoints({
                             userState.nickname = docUserProfileData.nickname ?? "Anonymous";
                             userState.channelid = docUserProfileData.channelid;
                             userState.activity = docUserProfileData.activity != undefined && docUserProfileData.activity != null ? docUserProfileData.activity.seconds : 0;
+                            userState.isactive = docUserProfileData.isactive ?? false;
+
+                            if (!docUserProfileData.isactive) {
+                                await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: true, activity: serverTimestamp() });
+                                console.log("Setting user as ONLINE!");
+                            }
                         }
                     }
                     console.log("userLoad()", userState);
@@ -85,8 +92,8 @@ export const authApi = firebaseApi.injectEndpoints({
                     if (firebaseAuth.currentUser) {
                         const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
                         if (docUserProfile.exists()) {
-                            const currUserData = docUserProfile.data() as ChatUserProfile;
-                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { lastchannel: "", channelid: currUserData.lastchannel, activity: serverTimestamp() });
+                            // const currUserData = docUserProfile.data() as ChatUserProfile;
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: true, activity: serverTimestamp() });
                         }
                     }
                     else {
@@ -101,11 +108,11 @@ export const authApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['User'],
+            invalidatesTags: ['User', 'Users'],
         }),
 
         /* Log off the current user */
-        userLogout: builder.mutation({
+        userLogout: builder.mutation<string, void>({
             async queryFn() {
                 try {
 
@@ -113,8 +120,8 @@ export const authApi = firebaseApi.injectEndpoints({
                     if (firebaseAuth.currentUser) {
                         const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
                         if (docUserProfile.exists()) {
-                            const currUserData = docUserProfile.data() as ChatUserProfile;
-                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { lastchannel: currUserData.channelid, channelid: "", activity: serverTimestamp() });
+                            // const currUserData = docUserProfile.data() as ChatUserProfile;
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: false, activity: serverTimestamp() });
                         }
                     }
 
@@ -129,7 +136,7 @@ export const authApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            invalidatesTags: ['User'],
+            invalidatesTags: ['User', 'Users'],
         }),
 
         /* Register a new user account and create profile */

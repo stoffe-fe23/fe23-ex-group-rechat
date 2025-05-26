@@ -29,7 +29,7 @@ export type ChatUserProfile = {
     picture: string,
     nickname: string,
     channelid?: string,
-    lastchannel?: string,
+    isactive?: boolean,
     activity: number | Date | FieldValue
 }
 
@@ -54,7 +54,8 @@ export type ChatUserData = {
     creationTime: string,
     lastSignInTime: string,
     channelid?: string,
-    authenticated: boolean
+    authenticated: boolean,
+    isactive: boolean
 }
 
 /*

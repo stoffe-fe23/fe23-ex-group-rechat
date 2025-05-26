@@ -4,9 +4,11 @@
 */
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
-import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp, deleteDoc, Unsubscribe } from 'firebase/firestore';
 import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, EditMessageParams, NewMessageParams } from '../typedefs/chatChannelTypes';
 
+let dbUsersListenerUnsubscribe: Unsubscribe;
+let dbMessagesListenerUnsubscribe: Unsubscribe;
 
 
 export const chatApi = firebaseApi.injectEndpoints({
@@ -21,6 +23,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     const qry = query(
                         collection(firebaseDB, "users"),
                         where('channelid', '==', channelId),
+                        where('isactive', '==', true),
                         orderBy("nickname", "asc")
                     );
 
@@ -30,6 +33,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
                         userList.push(usr);
                     });
+                    console.log(">>>> USERLIST INIT", userList);
 
                     return { data: userList };
                 }
@@ -40,7 +44,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             // Handle cache updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
-                let unsubHandle;
+                // let unsubHandle;
                 try {
                     console.log("Userslist database listener...", arg);
 
@@ -48,11 +52,12 @@ export const chatApi = firebaseApi.injectEndpoints({
                     const qry = query(
                         collection(firebaseDB, "users"),
                         where('channelid', '==', arg),
+                        where('isactive', '==', true),
                         orderBy("nickname", "asc")
                     );
                     // Set the database listener to receive updates
-                    unsubHandle = onSnapshot(qry, (snapshot) => {
-                        console.log("Channel users onShapshot");
+                    dbUsersListenerUnsubscribe = onSnapshot(qry, (snapshot) => {
+                        console.log("Channel users onShapshot", snapshot.docs);
                         updateCachedData(() => {
                             const userList = snapshot.docs.map((doc) => {
                                 const usr = doc.data() as ChannelUser;
@@ -70,8 +75,8 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
 
                 await cacheEntryRemoved;
-                if (unsubHandle) {
-                    unsubHandle();
+                if (dbUsersListenerUnsubscribe) {
+                    dbUsersListenerUnsubscribe();
                     console.log("UsersDB UNSUB!");
                 }
             },
@@ -108,9 +113,10 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
             },
             // Handle cache updates from firestore snapshot updates
-            async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
-                let unsubHandle;
+            async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved, cacheDataLoaded }) {
+                // let unsubHandle;
                 try {
+                    await cacheDataLoaded;
                     console.log("Messages database listener...", arg);
 
                     // Look for messages in the specified channel, cap at the 1000 latest
@@ -121,8 +127,8 @@ export const chatApi = firebaseApi.injectEndpoints({
                         limit(1000)
                     );
                     // Set the database listener to receive updates in the messages collection
-                    unsubHandle = onSnapshot(qry, (snapshot) => {
-                        updateCachedData(() => {
+                    dbMessagesListenerUnsubscribe = onSnapshot(qry, (snapshot) => {
+                        updateCachedData((draft) => {
                             const msgList = snapshot.docs.map((doc) => {
                                 const msgData = doc.data() as ChatMessage;
                                 msgData.messageid = doc.id;
@@ -130,6 +136,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 return msgData;
                             });
                             console.log("Message cache update", msgList);
+                            //draft.push(msgList as ChatMessage[]);
                             return msgList as ChatMessage[];
                         });
                     });
@@ -140,8 +147,8 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
 
                 await cacheEntryRemoved;
-                if (unsubHandle) {
-                    unsubHandle();
+                if (dbMessagesListenerUnsubscribe) {
+                    dbMessagesListenerUnsubscribe();
                     console.log("MessageDB UNSUB!");
                 }
             },
@@ -310,6 +317,25 @@ export const chatApi = firebaseApi.injectEndpoints({
             invalidatesTags: ['Messages', 'User', 'Users'],
         }),
 
+        // Unsubscribe the database listeners for the channel users and messages updates. 
+        unsubListeners: builder.mutation<string, void>({
+            async queryFn() {
+                try {
+                    if (dbMessagesListenerUnsubscribe && dbUsersListenerUnsubscribe) {
+                        console.log("DEBUG: RESETLISTENERS");
+                        dbMessagesListenerUnsubscribe();
+                        dbUsersListenerUnsubscribe();
+                    }
+                    return { data: "Database listeners reset." };
+                }
+                catch (error: any) {
+                    console.error("resetListeners() ERROR", error);
+                    return { error: error.message };
+                }
+            },
+            invalidatesTags: ['Messages', 'Users'],
+        }),
+
         // Create and join a new channel 
         createChannel: builder.mutation<string, ChatChannel>({
             async queryFn({ name, description, permanent }) {
@@ -387,7 +413,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     return { error: error.message };
                 }
             },
-            providesTags: ['Channel'], // TODO: Check if this works, of if it will only cache a single channel regardless of channelid param... 
+            providesTags: ['Channel'],
         }),
 
         // Get a list of all user profiles for resolving name and picture from UIDs
@@ -436,5 +462,6 @@ export const {
     useDeleteMessageMutation,
     useJoinChannelMutation,
     useLeaveChannelMutation,
-    useCreateChannelMutation
+    useCreateChannelMutation,
+    useUnsubListenersMutation
 } = chatApi;

@@ -9,7 +9,7 @@
     background-color: var(--button-normal-bg);
     color: var(--button-normal-text);
     width: 100%;
-    min-height: 1.5rem;
+    min-height: 2rem;
     cursor: pointer;
 }
 
