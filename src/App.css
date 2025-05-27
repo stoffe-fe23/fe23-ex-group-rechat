@@ -7,13 +7,17 @@
 
 :root {
     --body-color-bg: rgba(60, 60, 60, 1.0);
-    --footer-color-bg: grey;
+    --footer-color-bg: black;
+    --footer-color-text: white;
     --tab-active-color-bg: grey;
     --tab-active-color-text: white;
     --tab-inactive-color-bg: lightgrey;
     --tab-inactive-color-text: black;
     --user-button-color-bg: rgba(190, 190, 190, 0.8);
     --user-button-color-text: black;
+    --user-profile-box-color-bg: white;
+    --user-profile-box-color-text: black;
+    --user-profile-box-border: grey;
     --chat-header-color-bg: grey;
     --chat-header-color-text: black;
     --chat-messagelist-color-bg: black;
@@ -23,6 +27,12 @@
     --chat-message-color-bg: rgba(70, 70, 70, 0.8);
     --chat-message-color-text: rgba(240, 240, 240, 1.0);
     --chat-message-color-heading: rgba(170, 170, 170, 1.0);
+    --chat-channel-join-button-color-bg: black;
+    --chat-channel-join-button-color-text: white;
+    --chat-channel-join-button-color-name: orange;
+    --chat-channel-join-button-hover-bg: indigo;
+    --chat-channel-join-button-hover-text: white;
+    --chat-channel-join-button-hover-name: orange;
     --button-normal-bg: lightseagreen;
     --button-normal-text: black;
     --button-hover-bg: lightsalmon;
@@ -97,4 +107,5 @@ header {
 footer {
     grid-area: footer;
     background-color: var(--footer-color-bg);
+    color: var(--footer-color-text);
 }

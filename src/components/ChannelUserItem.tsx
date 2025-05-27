@@ -1,5 +1,5 @@
 // import { NavLink } from "react-router-dom";
-import { ChannelUser, ChatMessage } from "../typedefs/chatChannelTypes";
+import { ChannelUser } from "../typedefs/chatChannelTypes";
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelUserItem.module.css";
 import { useEffect, useState } from "react";

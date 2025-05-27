@@ -27,7 +27,7 @@ function App() {
         // here to finish running before the page closes.
     });
 
-    // User authentication observer to preserve user session if reloading page, closing the tab then returning etc
+    // User authentication observer to preserve user session if reloading page or closing and returning without logging off. 
     useEffect(() => {
         console.log("APP USEEFFECT RUNNING...");
         onAuthStateChanged(firebaseAuth, (user) => {

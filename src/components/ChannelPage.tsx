@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ChannelMessages from "./ChannelMessages";
 import ChannelPostMessage from "./ChannelPostMessage";
 import { useUserLoadQuery } from "../datastore/userSlice";
@@ -7,20 +7,24 @@ import { useEffect } from "react";
 import ChannelUsers from "./ChannelUsers";
 import styles from "../stylesheets/ChannelPage.module.css";
 import ChannelLeaveButton from "./ChannelLeaveButton";
-import PageTabs from "./PageTabs";
-
 
 export default function ChannelPage(): React.JSX.Element {
 
     const { channelId } = useParams<string>();
+    const navigate = useNavigate();
 
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
     const { data: channelData, isLoading: channelIsLoading, isError: channelIsError, error: channelError } = useGetChannelQuery(channelId ?? "");
     const [joinChannel, { isLoading: joinIsLoading, isError: joinIsError, error: joinError }] = useJoinChannelMutation();
 
+
     // Current user joins the channel if they are not already in it. 
     useEffect(() => {
-        if (channelId && channelId.length && userData && (channelId != userData.channelid)) {
+        if (!userData) {
+            // TODO: This does NOT work properly. Gets redirected when refreshing the page!!
+            navigate("/user/login");
+        }
+        else if (channelId && channelId.length && userData && (channelId != userData.channelid)) {
             console.log("************** JOIN CHANNEL...");
             joinChannel(channelId);
         }

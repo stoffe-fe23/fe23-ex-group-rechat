@@ -1,5 +1,4 @@
 import { useLocation, Location as RouterLocation } from "react-router";
-import PageTabs from "./PageTabs";
 
 export default function PageNotFound(): React.JSX.Element {
 

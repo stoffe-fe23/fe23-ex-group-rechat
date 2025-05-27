@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 // import { NavLink } from 'react-router-dom';
-import userIconNone from '/usericon-none.png';
+import userIconNone from '/usericon-default.png';
 import styles from "../stylesheets/UserRegister.module.css";
 import { useUserRegisterMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
-import PageTabs from './PageTabs';
+import iconUser from "/icons/icon-user-add.png";
 
 
 export default function UserRegister(): React.JSX.Element {
@@ -43,7 +43,7 @@ export default function UserRegister(): React.JSX.Element {
         <>
             <section className={styles['register-page']}>
                 <div className={styles['register-leftcol']}>
-                    foo!
+                    <div className={styles['register-logo']}>Group <span>Re</span>Chat</div>
                 </div>
                 <div className={styles['register-rightcol']}>
                     {userRegisterIsLoading && <div>Please wait...</div>}
@@ -70,13 +70,13 @@ export default function UserRegister(): React.JSX.Element {
                         <div>
                             <label htmlFor='password-repeat'>Repeat password</label>
                             <div
-                                className={`${styles['password-match-indicator']} ${password == passwordAgain ? styles['passwords-match'] : styles['passwords-no-match']}`}
+                                className={`${styles['password-match-indicator']} ${password.length && (password == passwordAgain) ? styles['passwords-match'] : styles['passwords-no-match']}`}
                                 id="password-match-indicator"
                                 title={password == passwordAgain ? "Passwords match" : "The passwords you have entered do not match!"}
                             ></div>
                             <input type="password" id="password-repeat" name="password-repeat" value={passwordAgain} onChange={(evt) => setPasswordAgain(evt.target.value)}></input>
                         </div>
-                        <div><button>Create</button></div>
+                        <div><button><img src={iconUser} alt="Create user account" />Join</button></div>
                     </form>
                 </div>
             </section>

@@ -5,25 +5,47 @@
 .channel-new-message form {
     display: grid;
     grid-template-columns: 1fr auto;
-    grid-template-areas: "content submit";
+    grid-template-areas: "content expand submit";
     justify-content: start;
     align-items: center;
 
 }
 
-.channel-new-message input {
+.messagefield {
+    position: relative;
     grid-area: content;
+    width: 100%;
+}
+
+.channel-new-message input {
+
     border: 0;
     border-radius: 10px 0px 0px 10px;
     padding: 0.2rem 0.5rem;
     min-height: 2rem;
+    width: 100%;
 }
 
+.messagexp:focus,
 .channel-new-message input:focus {
     outline: 0;
 }
 
-.channel-new-message button {
+.messagexp {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0.2rem 0.5rem;
+    width: 100%;
+    min-height: 80px;
+    border-radius: 10px 0px 10px 10px;
+    border: 0;
+    resize: vertical;
+    font-family: var(--font-content);
+    border-right: 5px solid var(--button-normal-bg);
+}
+
+.channel-new-button {
     grid-area: submit;
     border: 0;
     border-radius: 0px 10px 10px 0px;
@@ -36,12 +58,27 @@
     align-items: center;
 }
 
-.channel-new-message button:hover {
+.channel-exp-button {
+    grid-area: expand;
+    border: 0;
+    border-radius: 0px;
+    padding: 0.2rem 0.5rem;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    cursor: pointer;
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.channel-exp-button:hover,
+.channel-new-button:hover {
     color: var(--button-hover-text);
     background-color: var(--button-hover-bg);
 }
 
-.channel-new-button-icon {
+.channel-exp-button img,
+.channel-new-button img {
     width: 20px;
     height: 20px;
     margin: 0 0.2rem 0 0;

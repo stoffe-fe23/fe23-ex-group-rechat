@@ -1,24 +1,38 @@
 .channel-join {
     background-color: var(--tab-active-color-bg);
-    padding: 0.5rem;
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-height: 60vh;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
 }
 
 .channel-join h2 {
     margin: 0;
+    color: white;
 }
 
 .channel-join-list {
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    gap: 0.2rem;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    margin-top: 0;
+    margin-bottom: 0;
     width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-color: var(--chat-header-color-bg) var(--chat-messagelist-color-bg);
+    scrollbar-width: thin;
 }
 
 .channel-create {
@@ -31,7 +45,40 @@
     width: fit-content;
 }
 
+
+
 .channel-create:hover {
     background-color: var(--button-hover-bg);
     color: var(--button-hover-text);
+}
+
+.rightcol {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.leftcol {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-image: url('/dummy-image1.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+
+.logo {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 7rem;
+    font-weight: 900;
+    line-height: 100%;
+}
+
+.logo span {
+    color: rgb(255, 165, 0, 0.8);
 }

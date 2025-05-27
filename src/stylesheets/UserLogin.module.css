@@ -6,18 +6,18 @@
     justify-content: center;
     align-items: stretch;
     width: 100%;
-    height: 60vh;
+    min-height: 60vh;
 }
 
 .login-page h2 {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     margin: 0;
 }
 
 .login-form {
     background-color: white;
-    width: 250px;
-    padding: 1rem;
+    width: 275px;
+    padding: 1.5rem;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -26,18 +26,82 @@
 }
 
 .login-leftcol {
-    width: 100%;
+    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .login-rightcol {
-    width: 100%;
+    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     background-image: url('/dummy-image1.jpg');
     background-size: cover;
     background-position: center center;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 0.5rem 1.0rem;
+    border-radius: 10px;
+    border: 1px solid gray;
+}
+
+.login-form button {
+    border: 0;
+    border-radius: 10px 10px 10px 10px;
+    padding: 0.2rem 0.5rem;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    width: 100%;
+    min-height: 2rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    gap: 0.5rem;
+}
+
+.login-form button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+}
+
+.login-form button img {
+    width: 18px;
+    height: 18px;
+}
+
+.new-login-info {
+    background-color: lightskyblue;
+    width: 250px;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 3px 3px 12px rgba(10, 10, 10, 0.4);
+    text-align: left;
+}
+
+.new-login-info h3 {
+    font-size: 2.5rem;
+    margin: 0 0 0.2rem 0;
+    color: darkblue;
+}
+
+.login-logo {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 7rem;
+    font-weight: 900;
+    line-height: 100%;
+}
+
+.login-logo span {
+    color: rgb(255, 165, 0, 0.8);
 }

@@ -285,7 +285,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         // const response = await queryApi.dispatch(api.endpoints.getQuote.initiate(someArgsHere))`
 
                         if (!channelDoc.exists())
-                            throw new Error("Unable to join channel. A channel with the specified ID does not exist.");
+                            throw new Error(`Unable to join channel. A channel with the specified ID ${channelId} does not exist.`);
 
                         await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { channelid: channelId, activity: serverTimestamp() });
                     }
@@ -354,7 +354,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         // Make the creator join their new channel
                         await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { channelid: newDocRef.id, activity: serverTimestamp() });
 
-                        return { data: `Created channel ${newDocRef.id}` };
+                        return { data: newDocRef.id };
                     }
                     else {
                         throw new Error("You must be logged in to create a new channel.");

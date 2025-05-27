@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { LoginData } from '../typedefs/chatUserTypes';
 import styles from "../stylesheets/UserLogin.module.css";
 import iconDefUser from "/usericon-default.png";
-import PageTabs from './PageTabs';
+import iconUser from "/icons/icon-user.png";
 
 
 type UserLoginProps = {
@@ -41,7 +41,6 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
         <>
             <section className={styles['login-page']}>
                 <div className={styles['login-leftcol']}>
-                    {isNewUser && <div>Thank you for joining! Check your email and click on the link provided to activate your account before logging in.</div>}
                     <form onSubmit={onLoginSubmit} className={styles['login-form']}>
                         <div>
                             <img src={iconDefUser} alt="User login icon" />
@@ -56,16 +55,20 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
                             <input id="login-password" name="password" type="password" placeholder="Password" onChange={(evt) => setPassword(evt.target.value)} value={password} required />
                         </div>
                         <div>
-                            <button>Login</button>
+                            <button><img src={iconUser} alt="Log on" />Login</button>
                         </div>
                         {isLoading && <div>Please wait...</div>}
-                        <div>
+                        <div className={styles['login-register-link']}>
                             <NavLink to="/user/register">Create user account</NavLink>
                         </div>
                     </form>
                 </div>
                 <div className={styles['login-rightcol']}>
-
+                    {!isNewUser && <div className={styles['login-logo']}>Group <span>Re</span>Chat</div>}
+                    {isNewUser && <div className={styles['new-login-info']}>
+                        <h3>New user?</h3>
+                        <div>Please check your email inbox for a confirmation message and click on the link provided to activate your account before logging in.</div>
+                    </div>}
                 </div>
             </section>
         </>

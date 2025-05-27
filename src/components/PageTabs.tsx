@@ -1,7 +1,6 @@
-import { Link, NavLink, useLocation, useParams } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Location as RouterLocation } from "react-router";
-import { chatApi, useGetChannelQuery, useListChannelsQuery } from "../datastore/chatSlice";
-import { useAppDispatch } from "../datastore/hooks";
+import { useListChannelsQuery } from "../datastore/chatSlice";
 import { ChatChannel } from "../typedefs/chatChannelTypes";
 import styles from "../stylesheets/PageTabs.module.css";
 import { useUserLoadQuery } from "../datastore/userSlice";
@@ -40,15 +39,20 @@ export default function PageTabs(): React.JSX.Element {
 
     return (
         <>
-            {userData?.authenticated && <div className={styles['page-tabs']}>
-                <div className={activeTab == "user" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
+            <div className={styles['page-tabs']}>
+                <div className={activeTab == "front" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
+                    <NavLink to="/">Home</NavLink>
+                </div>
+                {userData?.authenticated && <div className={activeTab == "user" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
                     <NavLink to="/user/profile">User profile</NavLink>
-                </div>
-                <div className={activeTab == "channels" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
+                </div>}
+                {userData?.authenticated && <div className={activeTab == "channels" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
                     <NavLink to="/channels">Channels</NavLink>
-                </div>
-                {isInChannel && <div className={activeTab == "channel" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}><NavLink to={`/channel/${channelId}`}>Channel: {channelData.name.slice(0, 100)}</NavLink></div>}
-            </div>}
+                </div>}
+                {userData?.authenticated && isInChannel && <div className={activeTab == "channel" ? styles['page-tabs-tab-active'] : styles['page-tabs-tab']}>
+                    <NavLink to={`/channel/${channelId}`}>Channel: {channelData.name.slice(0, 100)}</NavLink>
+                </div>}
+            </div>
         </>
 
     );

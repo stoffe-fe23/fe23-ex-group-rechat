@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import { useGetUserProfileListQuery, useLoadMessagesQuery } from "../datastore/chatSlice";
 import ChannelMessage from "./ChannelMessage";
 import { ChannelUserProfile } from "../typedefs/chatChannelTypes";

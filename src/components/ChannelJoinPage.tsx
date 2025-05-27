@@ -16,19 +16,25 @@ export default function ChannelJoinPage(): React.JSX.Element {
     return (
         <>
             <section className={styles['channel-join']}>
-                <h2>Join a channel</h2>
-                {!userData?.authenticated && <div>You must be logged in to join a channel.</div>}
-                {userData?.authenticated && <div className={styles['channel-join-list']}>
-                    {!channelList || !channelList.length && <div>There are currently no active chat channels.</div>}
-                    {channelList?.map((chan, idx) => <ChannelListItem
-                        key={chan.channelid ?? idx}
-                        channelId={chan.channelid ?? ""}
-                        channelName={chan.name}
-                        channelDescription={chan.description}
-                        channelIsPermanent={chan.permanent}
-                    />)}
-                </div>}
-                {userData?.authenticated && <NavLink className={styles['channel-create']} to="/channel/create">Create new channel</NavLink>}
+                <div className={styles['leftcol']}>
+                    <div className={styles['logo']}>Group <span>Re</span>Chat</div>
+                    <h2>Join a channel</h2>
+                    {userData?.authenticated && <NavLink className={styles['channel-create']} to="/channel/create">Create new channel</NavLink>}
+                </div>
+                <div className={styles['rightcol']}>
+                    {!userData?.authenticated && <div>You must be logged in to join a channel.</div>}
+                    {userData?.authenticated && <div className={styles['channel-join-list']}>
+                        {!channelList || !channelList.length && <div>There are currently no active chat channels.</div>}
+                        {channelList?.map((chan, idx) => <ChannelListItem
+                            key={chan.channelid ?? idx}
+                            channelId={chan.channelid ?? ""}
+                            channelName={chan.name}
+                            channelDescription={chan.description}
+                            channelIsPermanent={chan.permanent}
+                        />)}
+                    </div>}
+                </div>
+
             </section>
         </>
     );
