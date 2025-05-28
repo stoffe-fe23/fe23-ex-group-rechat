@@ -39,7 +39,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("ERROR IN loadUsers() queryFn()", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             // Handle cache updates from firestore snapshot updates
@@ -109,7 +109,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("ERROR IN loadMessages() queryFn()", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             // Handle cache updates from firestore snapshot updates
@@ -128,7 +128,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                     );
                     // Set the database listener to receive updates in the messages collection
                     dbMessagesListenerUnsubscribe = onSnapshot(qry, (snapshot) => {
-                        updateCachedData((draft) => {
+                        updateCachedData((/* draft */) => {
                             const msgList = snapshot.docs.map((doc) => {
                                 const msgData = doc.data() as ChatMessage;
                                 msgData.messageid = doc.id;
@@ -185,7 +185,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("postMessage() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages'],
@@ -227,7 +227,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("editMessage() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages'],
@@ -269,7 +269,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("deleteMEssage() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages'],
@@ -293,7 +293,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("joinChannel() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages', 'User', 'Users'],
@@ -311,7 +311,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("leaveChannel() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages', 'User', 'Users'],
@@ -330,7 +330,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("resetListeners() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Messages', 'Users'],
@@ -363,7 +363,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("createChannel() ERROR", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['Channels', 'User', 'Users'],
@@ -386,7 +386,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("ERROR IN listChannels() queryFn()", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             providesTags: ['Channels'],
@@ -410,7 +410,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("ERROR IN getChannel() queryFn()", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             providesTags: ['Channel'],
@@ -443,7 +443,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("ERROR IN getUserProfileList() queryFn()", error);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             providesTags: ['Profiles'],

@@ -5,6 +5,18 @@ import styles from "../stylesheets/UserRegister.module.css";
 import { useUserRegisterMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
 import iconUser from "/icons/icon-user-add.png";
+import PasswordChecker from './PasswordChecker';
+
+function getFirebaseErrorMessage(code: string): string {
+    let errorMessage = "";
+    switch (code) {
+        case "auth/email-already-in-use": errorMessage = "The specified email address is already in use."; break;
+        case "auth/weak-password": errorMessage = "The password must be at least 6 characters long."; break;
+        case "auth/missing-password": errorMessage = "You must enter a password for your account."; break;
+        default: errorMessage = `Error: ${code}`; break;
+    }
+    return errorMessage;
+}
 
 
 export default function UserRegister(): React.JSX.Element {
@@ -15,7 +27,7 @@ export default function UserRegister(): React.JSX.Element {
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
 
-    const [userRegister, { isLoading: userRegisterIsLoading, error: userRegisterError }] = useUserRegisterMutation();
+    const [userRegister, { isLoading: userRegisterIsLoading, isError: userRegisterIsError, error: userRegisterError }] = useUserRegisterMutation();
 
     async function onRegisterSubmit(evt: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         evt.preventDefault();
@@ -25,17 +37,15 @@ export default function UserRegister(): React.JSX.Element {
             return;
         }
 
-        // TODO: Validate that the user has input a valid-ish email and name/pass of sufficient length! 
-
         try {
             const newUserData = await userRegister({ nickname, email, password }).unwrap();
             console.log("REGISTER NEW USER:", newUserData);
-            // TODO: Redirect to login page with message? 
             navigate("/user/login/new");
         }
         catch (error) {
-            console.error("REGISTER NEW USER ERROR!", error, userRegisterError);
-            // TODO: Handle any errors resulting from registration process? 
+            console.error("REGISTER NEW USER ERROR:", error);
+            setPassword("");
+            setPasswordAgain("");
         }
     }
 
@@ -46,8 +56,6 @@ export default function UserRegister(): React.JSX.Element {
                     <div className={styles['register-logo']}>Group <span>Re</span>Chat</div>
                 </div>
                 <div className={styles['register-rightcol']}>
-                    {userRegisterIsLoading && <div>Please wait...</div>}
-
                     <form onSubmit={onRegisterSubmit} className={styles['register-form']}>
                         <div>
                             <img src={userIconNone} alt="New user icon" />
@@ -57,26 +65,28 @@ export default function UserRegister(): React.JSX.Element {
                         </div>
                         <div>
                             <label htmlFor='nickname'>Screen name</label>
-                            <input type="text" id="nickname" name="nickname" value={nickname} onChange={(evt) => setNickname(evt.target.value)}></input>
+                            <input type="text" id="nickname" name="nickname" value={nickname} onChange={(evt) => setNickname(evt.target.value)} minLength={2} maxLength={20} required></input>
                         </div>
                         <div>
                             <label htmlFor='email'>E-mail address</label>
-                            <input type="email" id="email" name="email" value={email} onChange={(evt) => setEmail(evt.target.value)}></input>
+                            <input type="email" id="email" name="email" value={email} onChange={(evt) => setEmail(evt.target.value)} required></input>
                         </div>
                         <div>
                             <label htmlFor='password'>Password</label>
-                            <input type="password" id="password" name="password" value={password} onChange={(evt) => setPassword(evt.target.value)}></input>
+                            <input type="password" id="password" name="password" value={password} onChange={(evt) => setPassword(evt.target.value)} minLength={6} maxLength={100} required></input>
                         </div>
                         <div>
                             <label htmlFor='password-repeat'>Repeat password</label>
-                            <div
-                                className={`${styles['password-match-indicator']} ${password.length && (password == passwordAgain) ? styles['passwords-match'] : styles['passwords-no-match']}`}
-                                id="password-match-indicator"
-                                title={password == passwordAgain ? "Passwords match" : "The passwords you have entered do not match!"}
-                            ></div>
-                            <input type="password" id="password-repeat" name="password-repeat" value={passwordAgain} onChange={(evt) => setPasswordAgain(evt.target.value)}></input>
+                            <PasswordChecker password={password} passwordAgain={passwordAgain} minLength={6} />
+                            <input type="password" id="password-repeat" name="password-repeat" value={passwordAgain} onChange={(evt) => setPasswordAgain(evt.target.value)} minLength={6} maxLength={100}></input>
                         </div>
-                        <div><button><img src={iconUser} alt="Create user account" />Join</button></div>
+                        {userRegisterIsError && <div className={styles['error-message']}>{getFirebaseErrorMessage(userRegisterError as string)}</div>}
+                        <div>
+                            <button disabled={userRegisterIsLoading}>
+                                {userRegisterIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
+                                <img src={iconUser} alt="Create user account" />Join
+                            </button>
+                        </div>
                     </form>
                 </div>
             </section>

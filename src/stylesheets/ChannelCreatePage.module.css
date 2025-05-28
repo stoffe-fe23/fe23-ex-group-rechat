@@ -107,6 +107,7 @@
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
 }
 
 .channel-create-form button:hover {
@@ -117,4 +118,27 @@
 .channel-create-form button img {
     width: 18px;
     height: 18px;
+}
+
+.busy {
+    position: absolute;
+    left: 0px;
+    margin-left: 0.5rem;
+    z-index: 1;
+}
+
+.error-message {
+    background-color: darkred;
+    color: white;
+    padding: 0.4rem 1rem 0.47rem 2rem;
+    border-radius: 10px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    background-image: url("/icons/icon-warning.png");
+    background-size: 18px 18px;
+    background-position: 0.5rem 0.4rem;
+    background-repeat: no-repeat;
+    z-index: 1;
+    box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
 }

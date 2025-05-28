@@ -25,6 +25,7 @@ function timestampToDateString(time: number, locale: string = 'sv-SE') {
 export default function ChannelMessage({ messageData, authorData }: ChannelMessageProps): React.JSX.Element {
     // Toggle for showing the message editor form instead of the text content element
     const [showingEditForm, setShowingEditForm] = useState<boolean>(false);
+    const [isPictureBroken, setIsPictureBroken] = useState<boolean>(false);
     // Get reducer for deleting the message
     const [deleteMessage, { isLoading: deleteIsLoading, isError: deleteIsError, error: deleteError }] = useDeleteMessageMutation();
     // Get logged on user data
@@ -37,19 +38,20 @@ export default function ChannelMessage({ messageData, authorData }: ChannelMessa
         authorData = { authid: "", nickname: "Anonymous", picture: "" };
     }
 
-    // Save button pressed in editing form - hide the form. 
-    function onEditMessageCallback(feedback: string): void {
+    // Save button pressed in the editing form - hide the form. 
+    function onEditMessageCallback(): void {
         setShowingEditForm(false);
-        console.log("End edit message", feedback);
     }
 
-    // Edit button clicked, display the editing form. 
+    // Edit button clicked, display the editing form in place of the message text. 
     function onEditClick(event: React.SyntheticEvent<HTMLButtonElement>): void {
+        event.preventDefault();
         setShowingEditForm(true);
     }
 
-    // Delete button clicked - remove the message.
+    // Delete button clicked - ask confirmation then remove the message.
     function onDeleteClick(event: React.SyntheticEvent<HTMLButtonElement>): void {
+        event.preventDefault();
         if (confirm("Are you sure you wish to delete this message?")) {
             if (messageData.messageid && (messageData.messageid.length > 0)) {
                 try {
@@ -64,23 +66,29 @@ export default function ChannelMessage({ messageData, authorData }: ChannelMessa
 
     // Cancel editing button clicked - hide the editing form without saving.
     function onCancelClick(event: React.SyntheticEvent<HTMLButtonElement>): void {
+        event.preventDefault();
         setShowingEditForm(false);
+    }
+
+    function onPictureError(): void {
+        setIsPictureBroken(true);
     }
 
     return (
         <>
             <div className={styles['channel-message']}>
-                <img className={styles['channel-message-picture']} src={authorData.picture && authorData.picture.length ? authorData.picture : userIconDef} alt="User picture" />
+                <img className={styles['channel-message-picture']} src={!isPictureBroken && authorData.picture && authorData.picture.length ? authorData.picture : userIconDef} alt="User picture" onError={onPictureError} />
                 <div className={styles['channel-message-name']}>{authorData.nickname}</div>
                 <div className={styles['channel-message-date']}>{timestampToDateString(messageData.postdate as number)}</div>
                 {!showingEditForm && <div className={styles['channel-message-text']}><Markdown disallowedElements={markdownDisallow}>{messageData.content}</Markdown></div>}
                 {showingEditForm && <ChannelMessageEdit messageId={messageData.messageid as string} messageText={messageData.content} editMessageCallback={onEditMessageCallback} />}
                 <div className={styles['channel-message-ops']}>
-                    {deleteIsLoading || userIsLoading && <div>Please wait...</div>}
+                    {deleteIsLoading || userIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
                     {(!showingEditForm && userData && (authorData.authid == userData.uid)) && <button title="Edit message" onClick={onEditClick}><img src={iconEdit} alt="Edit message" /></button>}
                     {showingEditForm && <button title="Cancel editing message" onClick={onCancelClick}><img src={iconCancel} alt="Cancel editing" /></button>}
                     {(userData && (authorData.authid == userData.uid)) && <button title="Delete message" onClick={onDeleteClick}><img src={iconDelete} alt="Delete message" /></button>}
                 </div>
+                {deleteIsError || userIsError && <div className={styles['error-message']}>{deleteError as string} {userError as string}</div>}
             </div>
 
         </>

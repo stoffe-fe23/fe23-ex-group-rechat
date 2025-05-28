@@ -22,7 +22,7 @@
     --chat-header-color-text: black;
     --chat-messagelist-color-bg: black;
     --chat-userlist-color-bg: black;
-    --chat-user-color-bg: rgb(100, 100, 100);
+    --chat-user-color-bg: rgb(32, 32, 32);
     --chat-user-color-text: white;
     --chat-message-color-bg: rgba(70, 70, 70, 0.8);
     --chat-message-color-text: rgba(240, 240, 240, 1.0);
@@ -108,4 +108,57 @@ footer {
     grid-area: footer;
     background-color: var(--footer-color-bg);
     color: var(--footer-color-text);
+}
+
+.error-message {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: darkred;
+    color: white;
+    padding: 0.25rem 1rem 0.25rem 2rem;
+    border-radius: 0px 0px 10px 0px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    background-image: url("/icons/icon-warning.png");
+    background-size: 18px 18px;
+    background-position: 0.5rem 0.2rem;
+    background-repeat: no-repeat;
+    z-index: 1;
+    box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}
+
+#busy {
+    display: block;
+    background-color: rgba(0, 0, 168, 0.9);
+    color: white;
+    background-image: url("/icons/icon-wait.png");
+    background-size: cover;
+    background-position: center center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    animation: busy-spin 2s linear infinite;
+}
+
+.busy {
+    position: absolute;
+    top: calc(50vh - 100px);
+    left: calc(50vw - 40px);
+    width: 80px !important;
+    height: 80px !important;
+    z-index: 2;
+    border: 3px solid white;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes busy-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

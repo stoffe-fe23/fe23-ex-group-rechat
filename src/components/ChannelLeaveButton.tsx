@@ -2,6 +2,7 @@ import React from 'react';
 import { useLeaveChannelMutation } from '../datastore/chatSlice';
 import styles from "../stylesheets/ChannelLeaveButton.module.css";
 import { useNavigate } from 'react-router';
+import iconExit from "/icons/icon-exit.png";
 
 
 export default function ChannelLeaveButton(): React.JSX.Element {
@@ -14,8 +15,7 @@ export default function ChannelLeaveButton(): React.JSX.Element {
 
         if (confirm("Are you sure you wish to leave this channel?")) {
             try {
-                const leaveInfo = await leaveChannel().unwrap();
-                console.log("LEAVE CHANNEL SUCCESS:", leaveInfo);
+                await leaveChannel().unwrap();
                 navigate("/channels");
             }
             catch (err) {
@@ -27,10 +27,13 @@ export default function ChannelLeaveButton(): React.JSX.Element {
 
     return (
         <div className={styles['channel-leave']}>
-            {leaveIsLoading && <div>Please wait...</div>}
             <form onSubmit={onLeaveSubmit}>
-                <button>Leave channel</button>
+                <button>
+                    {leaveIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
+                    <img src={iconExit} alt="Leave the channel." />Leave channel
+                </button>
             </form>
+            {leaveIsError && <div className={styles['error-message']}>{leaveError as string}</div>}
         </div>
     );
 }

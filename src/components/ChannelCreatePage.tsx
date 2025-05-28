@@ -13,7 +13,7 @@ export default function ChannelCreatePage(): React.JSX.Element {
     const [description, setDescription] = useState<string>("");
     const [permanent, setPermanent] = useState<boolean>(false);
 
-    const [createChannel, { isLoading: createChannelIsLoading, error: createChannelError }] = useCreateChannelMutation();
+    const [createChannel, { isLoading: createChannelIsLoading, isError: createChannelIsError, error: createChannelError }] = useCreateChannelMutation();
 
     async function onCreateChannelSubmit(evt: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         evt.preventDefault();
@@ -31,7 +31,6 @@ export default function ChannelCreatePage(): React.JSX.Element {
             });
     }
 
-
     return (
         <>
             <section className={styles['channel-create']}>
@@ -40,18 +39,21 @@ export default function ChannelCreatePage(): React.JSX.Element {
                         <h2>New channel</h2>
                         <div>
                             <label htmlFor="name">Channel name</label>
-                            <input type="text" name="name" id="name" value={name} onChange={(evt) => setName(evt.target.value)} placeholder="Name of the new channel"></input>
+                            <input type="text" name="name" id="name" value={name} onChange={(evt) => setName(evt.target.value)} placeholder="Name of the new channel" minLength={4} maxLength={100} required></input>
                         </div>
                         <div>
                             <label htmlFor="description">Short description of channel</label>
-                            <textarea id="description" name="description" value={description} onChange={(evt) => setDescription(evt.target.value)} placeholder="Describe what the new channel is about."></textarea>
+                            <textarea id="description" name="description" value={description} onChange={(evt) => setDescription(evt.target.value)} placeholder="Describe what the new channel is about." minLength={4} maxLength={1000} required></textarea>
                         </div>
                         <div className={styles['channel-create-permanent-wrapper']}>
                             <input type="checkbox" name="permanent" id="permanent" checked={permanent} onChange={(evt) => setPermanent(evt.target.checked)}></input>
                             <label htmlFor="permanent">Channel persists with no participants</label>
                         </div>
-                        {createChannelIsLoading && <div>Please wait...</div>}
-                        <button disabled={createChannelIsLoading}><img src={iconChannel} alt="Create new channel" />Create channel</button>
+                        {createChannelIsError && <div className={styles['error-message']}>{createChannelError as string}</div>}
+                        <button disabled={createChannelIsLoading}>
+                            {createChannelIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
+                            <img src={iconChannel} alt="Create new channel" />Create channel
+                        </button>
                     </form>
                 </div>
                 <div className={styles['rightcol']}>

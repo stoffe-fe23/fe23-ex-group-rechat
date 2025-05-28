@@ -24,6 +24,7 @@ import {
 } from "firebase/auth";
 import { firebaseApi } from '../api/firebase-api';
 import { ChatUserProfile, ChatUserData, LoginData } from '../typedefs/chatUserTypes';
+import { FirebaseError } from 'firebase/app';
 
 
 export const authApi = firebaseApi.injectEndpoints({
@@ -31,7 +32,6 @@ export const authApi = firebaseApi.injectEndpoints({
         /* Load user authentication and profile data */
         userLoad: builder.query<ChatUserData, void>({
             async queryFn() {
-                console.log("DEBUG: USERLOAD START");
                 try {
                     const userState: ChatUserData = {
                         uid: "",
@@ -75,7 +75,7 @@ export const authApi = firebaseApi.injectEndpoints({
                 }
                 catch (error: any) {
                     console.error("userLoad() ERROR", error.message);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             providesTags: ['User'],
@@ -88,24 +88,19 @@ export const authApi = firebaseApi.injectEndpoints({
                     console.log("LOGIN:", email, password);
                     const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
 
-                    // If user was in a channel before logging off, get back into it.
+                    // Flag the user profile as active to display in channel user list etc. 
                     if (firebaseAuth.currentUser) {
                         const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
                         if (docUserProfile.exists()) {
-                            // const currUserData = docUserProfile.data() as ChatUserProfile;
                             await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: true, activity: serverTimestamp() });
                         }
-                    }
-                    else {
-                        console.log("!!! currentUser not set in userLogin()");
                     }
 
                     console.log("userLogin()", userCredential.user);
                     return { data: "Login successful." };
                 }
                 catch (error: any) {
-                    console.error("userLogin() ERROR", error.message);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['User', 'Users'],
@@ -116,11 +111,10 @@ export const authApi = firebaseApi.injectEndpoints({
             async queryFn() {
                 try {
 
-                    // Save which channel the user is in, if any, then remove them from it. 
+                    // Set us as inactive in the profile to hide from the joined channel user list etc.
                     if (firebaseAuth.currentUser) {
                         const docUserProfile = await getDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid));
                         if (docUserProfile.exists()) {
-                            // const currUserData = docUserProfile.data() as ChatUserProfile;
                             await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: false, activity: serverTimestamp() });
                         }
                     }
@@ -132,8 +126,7 @@ export const authApi = firebaseApi.injectEndpoints({
                     return { data: "Logout successful." };
                 }
                 catch (error: any) {
-                    console.error("userLogout() ERROR", error.message);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['User', 'Users'],
@@ -145,7 +138,6 @@ export const authApi = firebaseApi.injectEndpoints({
                 try {
                     const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
                     if (userCredential && (userCredential.user != null) && (userCredential.user.uid)) {
-                        console.log("New Auth user created!");
                         // Auth account created, add new user profile to the database.
                         const userProfileData: ChatUserProfile = {
                             authid: userCredential.user.uid,
@@ -154,20 +146,16 @@ export const authApi = firebaseApi.injectEndpoints({
                             channelid: "",
                             activity: serverTimestamp()
                         }
-
                         await setDoc(doc(firebaseDB, "users", userCredential.user.uid), userProfileData);
-                        console.log("New user profile created!");
 
                         // Send a verification email with link to let user activate the new account
                         await sendEmailVerification(userCredential.user);
-                        console.log("Verification email sent");
                     }
 
                     return { data: "User Registration successful." };
                 }
                 catch (error: any) {
-                    console.error("userRegister() ERROR", error.message);
-                    return { error: error.message };
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['User'],
@@ -194,8 +182,11 @@ export const authApi = firebaseApi.injectEndpoints({
                             await updatePassword(firebaseAuth.currentUser, password)
                             console.log("USER PASSWORD UPDATED");
                         }
+                        else if (password && (password.length > 0) && (password.length < 6)) {
+                            throw new FirebaseError("weak-password", "The password must be 6 characters long or more.");
+                        }
 
-                        // Update profile data (screen name, picture...)
+                        // Update user profile data 
                         const profileData: ChatUserProfile = {
                             authid: firebaseAuth.currentUser.uid,
                             picture: picture,
@@ -206,11 +197,11 @@ export const authApi = firebaseApi.injectEndpoints({
                         console.log("PROFILE EDIT:", profileData, firebaseAuth.currentUser);
                     }
 
-                    return { data: "User profile update successful." };
+                    return { data: "User profile updated." };
                 }
                 catch (error: any) {
-                    console.error("userEdit() ERROR", error.message);
-                    return { error: error.message };
+                    console.error("userEdit() ERROR", error.code);
+                    return { error: error.code };
                 }
             },
             invalidatesTags: ['User', 'Profiles'],

@@ -21,17 +21,18 @@ function App() {
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
 
 
-    useBeforeUnload((evt) => {
+    useBeforeUnload((/* evt */) => {
         // TODO: Mark current user as inactive, if logged on
         // If this is even possible, seems like you can't expect any async functionality, like DB/API calls, 
         // here to finish running before the page closes.
+        console.log("UNLOAD!");
     });
 
     // User authentication observer to preserve user session if reloading page or closing and returning without logging off. 
     useEffect(() => {
         console.log("APP USEEFFECT RUNNING...");
-        onAuthStateChanged(firebaseAuth, (user) => {
-            console.log("onAuthStateChanged() load user data", user);
+        onAuthStateChanged(firebaseAuth, (/* user */) => {
+            // console.log("onAuthStateChanged() load user data", user);
             dispatch(authApi.util.prefetch('userLoad', undefined, { force: true }));
         });
     }, [userData, dispatch]);
@@ -40,11 +41,13 @@ function App() {
     return (
         <>
             <main id="page" aria-live="assertive">
+                {userIsError && <div className="error-message">{userError as string}</div>}
                 <header>
                     <div className="header-tabs"><PageTabs /></div>
                     <UserProfileButton />
                 </header>
                 <div id="main-content">
+                    {userIsLoading && <div id="busy" className='busy' title="Please wait..."></div>}
                     <Routes>
                         <Route path="/" element={<FrontPage />} />
                         <Route path="/user/login" element={<UserLogin isNewUser={false} />} />

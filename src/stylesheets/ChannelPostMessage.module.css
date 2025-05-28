@@ -43,6 +43,7 @@
     resize: vertical;
     font-family: var(--font-content);
     border-right: 5px solid var(--button-normal-bg);
+    z-index: 1;
 }
 
 .channel-new-button {
@@ -83,4 +84,23 @@
     height: 20px;
     margin: 0 0.2rem 0 0;
     padding: 0;
+}
+
+.error-message {
+    position: absolute;
+    background-color: darkred;
+    color: white;
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    border-radius: 10px;
+    font-family: var(--font-heading);
+    background-image: url("/icons/icon-warning.png");
+    background-size: 18px 18px;
+    background-position: 0.5rem center;
+    background-repeat: no-repeat;
+}
+
+.busy {
+    position: absolute;
+    z-index: 1;
+    margin-left: 0.4rem;
 }

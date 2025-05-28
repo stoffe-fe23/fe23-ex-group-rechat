@@ -8,3 +8,35 @@
     scrollbar-color: var(--chat-header-color-bg) var(--chat-messagelist-color-bg);
     scrollbar-width: thin;
 }
+
+.busy {
+    position: absolute;
+    top: calc(50% - 30px);
+    left: calc(50% - 30px);
+    margin-right: 1rem;
+    margin-top: 1rem;
+    width: 60px !important;
+    height: 60px !important;
+    z-index: 2;
+    opacity: 0.9;
+    border: 3px solid white;
+}
+
+.error-message {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background-color: darkred;
+    color: white;
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    border-radius: 10px 0px 0px 10px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    background-image: url("/icons/icon-warning.png");
+    background-size: 18px 18px;
+    background-position: 0.5rem 0.5rem;
+    background-repeat: no-repeat;
+    z-index: 1;
+    box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}

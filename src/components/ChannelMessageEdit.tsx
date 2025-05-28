@@ -1,6 +1,3 @@
-// import { NavLink } from "react-router-dom";
-import { ChannelUserProfile, ChatMessage } from "../typedefs/chatChannelTypes";
-import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelMessageEdit.module.css";
 import { useState } from "react";
 import { useEditMessageMutation } from "../datastore/chatSlice";
@@ -35,8 +32,11 @@ export default function ChannelMessageEdit({ messageId, messageText, editMessage
     return (
         <form onSubmit={onEditMessageSubmit} className={styles['edit-message-form']}>
             <textarea value={message} onChange={(evt) => setMessage(evt.target.value)}></textarea>
-            {editIsLoading && <div>Please wait...</div>}
-            {!editIsLoading && <button><img src={iconTalk} alt="Save changes" /> Save</button>}
+            <button disabled={editIsLoading}>
+                {editIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
+                <img src={iconTalk} alt="Save changes" /> Save
+            </button>
+            {editIsError && <div className={styles['error-message']}>{editError as string}</div>}
         </form>
     );
 }
