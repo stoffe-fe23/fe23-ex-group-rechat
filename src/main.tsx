@@ -1,10 +1,11 @@
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
 import { Provider } from 'react-redux';
 import { store } from "./datastore/store";
 import { BrowserRouter as Router } from 'react-router-dom';
 
-// Add Redux store and React router
+import App from './App.tsx';
+
+// Add Redux store and React router to App component
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <Router>

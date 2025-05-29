@@ -100,3 +100,39 @@
     height: 35px !important;
     z-index: 1;
 }
+
+.busy-editor {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+    z-index: 1;
+}
+
+.channel-editor-button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 35px;
+    height: 35px;
+    border: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--button-normal-bg);
+    color: var(--button-normal-text);
+    cursor: pointer;
+}
+
+.channel-editor-button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+}
+
+.channel-editor-button img {
+    width: 100%;
+    height: auto;
+    margin: 0;
+}

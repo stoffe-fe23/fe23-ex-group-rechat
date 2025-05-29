@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useUserLoginMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
 import { LoginData } from '../typedefs/chatUserTypes';
+
 import styles from "../stylesheets/UserLogin.module.css";
 import iconDefUser from "/usericon-default.png";
 import iconUser from "/icons/icon-user.png";
@@ -12,6 +13,7 @@ type UserLoginProps = {
     isNewUser: boolean
 }
 
+// Translate relevant Firebase error messages to something slightly more human friendly. 
 function getFirebaseErrorMessage(code: string): string {
     let errorMessage = "";
     switch (code) {
@@ -21,7 +23,7 @@ function getFirebaseErrorMessage(code: string): string {
         case "auth/email-change-needs-verification":
         case "auth/unverified-email": errorMessage = "Your email must be verified before logging in."; break;
         case "permission-denied": errorMessage = "Please activate your account before logging on. Check your email."; break;
-        default: errorMessage = `Error: ${code}`; break;
+        default: errorMessage = `An error occurred! (${code})`; break;
     }
     return errorMessage;
 }
@@ -29,16 +31,20 @@ function getFirebaseErrorMessage(code: string): string {
 export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Element {
 
     const navigate = useNavigate();
+
+    // Form field values
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const [userLogin, { isLoading, isError, error }] = useUserLoginMutation();
 
+    // Form submit handler - attempt to log on
     async function onLoginSubmit(event: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
 
         try {
-            const userData = await userLogin({ email, password } as LoginData).unwrap();
-            console.log("LOGIN SUCCESS:", userData);
+            const userID = await userLogin({ email, password } as LoginData).unwrap();
+            console.log("LOGIN SUCCESS:", userID);
             setEmail("");
             setPassword("");
             navigate("/channels");
@@ -47,7 +53,6 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
             console.log("LOGIN FAILURE:", err);
             setPassword("");
         }
-
     }
 
     return (
@@ -82,8 +87,8 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
                 <div className={styles['login-rightcol']}>
                     {!isNewUser && <div className={styles['login-logo']}>Group <span>Re</span>Chat</div>}
                     {isNewUser && <div className={styles['new-login-info']}>
-                        <h3>New user!</h3>
-                        <div>Welcome. Please check your email inbox for an email verification message and click on the link provided to activate your account before logging in.</div>
+                        <h3>Important</h3>
+                        <div>Welcome! Please check your email inbox for an email verification message and click on the link provided to activate your account before logging in.</div>
                     </div>}
                 </div>
             </section>

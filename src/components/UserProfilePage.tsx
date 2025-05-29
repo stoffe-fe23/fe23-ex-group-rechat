@@ -7,9 +7,8 @@ import styles from "../stylesheets/UserProfilePage.module.css";
 import { useUserEditMutation, useUserLoadQuery } from '../datastore/userSlice';
 import PasswordChecker from './PasswordChecker';
 
-// 
+// Translate relevant Firebase error messages to something a bit more human friendly.
 function getFirebaseErrorMessage(code: string): string {
-    console.log("ERROR handler", code);
     let errorMessage = "";
     switch (code) {
         case "auth/unverified-email": errorMessage = "You must reactivate your account first before continuing. Check your email."; break;
@@ -19,7 +18,7 @@ function getFirebaseErrorMessage(code: string): string {
         case "auth/email-already-in-use": errorMessage = "The specified email address is already in use by another account."; break;
         case "auth/missing-password": errorMessage = "You must enter your current password when changing your email address or password."; break;
         case "permission-denied": errorMessage = "Please activate your account before logging on. Check your email."; break;
-        default: errorMessage = `Unknown error: ${code}`; break;
+        default: errorMessage = `An error occurred! (${code})`; break;
     }
     return errorMessage;
 }
@@ -105,7 +104,7 @@ export default function UserProfilePage(): React.JSX.Element {
                                     <h3>Change email address</h3>
                                     <label htmlFor='email'>E-mail address</label>
                                     <input type="email" name="email" id="email" value={email} onChange={(evt) => setEmail(evt.target.value)} required />
-                                    <div className={styles['description']}>Note: Changing your email will send a new verification message to the specified e-mail address. Your account will be locked until you click the link in that message.</div>
+                                    <div className={styles['description']}>Note: Changing your email will send a new verification message to the specified e-mail address. <strong>Your account will be locked until you click the link in that message.</strong></div>
                                 </div>
 
                                 <div className={styles['field-item']}>

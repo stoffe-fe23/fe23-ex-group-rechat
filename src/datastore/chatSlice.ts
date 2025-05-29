@@ -7,8 +7,9 @@ import { firebaseApi } from '../api/firebase-api';
 import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, limit, where, onSnapshot, getDocs, getDoc, Timestamp, deleteDoc, Unsubscribe } from 'firebase/firestore';
 import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, EditMessageParams, NewMessageParams } from '../typedefs/chatChannelTypes';
 
-let dbUsersListenerUnsubscribe: Unsubscribe;
-let dbMessagesListenerUnsubscribe: Unsubscribe;
+// Store database listener unsubscribe handlers here so they can be manually closed. 
+let dbUsersListenerUnsubscribe: Unsubscribe[] = [];
+let dbMessagesListenerUnsubscribe: Unsubscribe[] = [];
 
 
 export const chatApi = firebaseApi.injectEndpoints({
@@ -44,7 +45,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             // Handle cache updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
-                // let unsubHandle;
+                let unsubHandle;
                 try {
                     console.log("Userslist database listener...", arg);
 
@@ -56,7 +57,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         orderBy("nickname", "asc")
                     );
                     // Set the database listener to receive updates
-                    dbUsersListenerUnsubscribe = onSnapshot(qry, (snapshot) => {
+                    unsubHandle = onSnapshot(qry, (snapshot) => {
                         console.log("Channel users onShapshot", snapshot.docs);
                         updateCachedData(() => {
                             const userList = snapshot.docs.map((doc) => {
@@ -64,10 +65,11 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
                                 return usr;
                             });
-                            console.log("Channel users cache update", userList);
+                            console.log("Channel users cache update");
                             return userList as ChannelUser[];
                         });
                     });
+                    dbUsersListenerUnsubscribe.push(unsubHandle);
                 }
                 catch (error: any) {
                     console.log('ERROR IN loadUsers() onCacheEntryAdded', error);
@@ -75,8 +77,8 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
 
                 await cacheEntryRemoved;
-                if (dbUsersListenerUnsubscribe) {
-                    dbUsersListenerUnsubscribe();
+                if (unsubHandle) {
+                    unsubHandle();
                     console.log("UsersDB UNSUB!");
                 }
             },
@@ -114,7 +116,7 @@ export const chatApi = firebaseApi.injectEndpoints({
             },
             // Handle cache updates from firestore snapshot updates
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved, cacheDataLoaded }) {
-                // let unsubHandle;
+                let unsubHandle;
                 try {
                     await cacheDataLoaded;
                     console.log("Messages database listener...", arg);
@@ -127,7 +129,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         limit(1000)
                     );
                     // Set the database listener to receive updates in the messages collection
-                    dbMessagesListenerUnsubscribe = onSnapshot(qry, (snapshot) => {
+                    unsubHandle = onSnapshot(qry, (snapshot) => {
                         updateCachedData((/* draft */) => {
                             const msgList = snapshot.docs.map((doc) => {
                                 const msgData = doc.data() as ChatMessage;
@@ -135,11 +137,11 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 msgData.postdate = msgData.postdate != null ? (msgData.postdate as Timestamp).seconds : 0;
                                 return msgData;
                             });
-                            console.log("Message cache update", msgList);
-                            //draft.push(msgList as ChatMessage[]);
+                            console.log("Message cache update");
                             return msgList as ChatMessage[];
                         });
                     });
+                    dbMessagesListenerUnsubscribe.push(unsubHandle);
                 }
                 catch (error: any) {
                     console.log('ERROR IN loadMessages() onCacheEntryAdded', error);
@@ -147,8 +149,8 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
 
                 await cacheEntryRemoved;
-                if (dbMessagesListenerUnsubscribe) {
-                    dbMessagesListenerUnsubscribe();
+                if (unsubHandle) {
+                    unsubHandle();
                     console.log("MessageDB UNSUB!");
                 }
             },
@@ -321,10 +323,20 @@ export const chatApi = firebaseApi.injectEndpoints({
         unsubListeners: builder.mutation<string, void>({
             async queryFn() {
                 try {
-                    if (dbMessagesListenerUnsubscribe && dbUsersListenerUnsubscribe) {
-                        console.log("DEBUG: RESETLISTENERS");
-                        dbMessagesListenerUnsubscribe();
-                        dbUsersListenerUnsubscribe();
+                    console.log(">>>>>>> DEBUG: RESETLISTENERS", dbMessagesListenerUnsubscribe.length, dbUsersListenerUnsubscribe.length);
+                    if (dbUsersListenerUnsubscribe.length) {
+                        dbUsersListenerUnsubscribe.forEach((unsubHandle) => {
+                            if (unsubHandle)
+                                unsubHandle();
+                        });
+                        dbUsersListenerUnsubscribe.length = 0;
+                    }
+                    if (dbMessagesListenerUnsubscribe.length) {
+                        dbMessagesListenerUnsubscribe.forEach((unsubHandle) => {
+                            if (unsubHandle)
+                                unsubHandle();
+                        });
+                        dbMessagesListenerUnsubscribe.length = 0;
                     }
                     return { data: "Database listeners reset." };
                 }
@@ -367,6 +379,40 @@ export const chatApi = firebaseApi.injectEndpoints({
                 }
             },
             invalidatesTags: ['Channels', 'User', 'Users'],
+        }),
+
+        // Create and join a new channel 
+        editChannel: builder.mutation<string, ChatChannel>({
+            async queryFn({ channelid, name, description, permanent, admin }) {
+                try {
+                    console.log("DEBUG: EDITCHANNEL START", channelid, name, description, permanent, admin);
+                    if (firebaseAuth.currentUser) {
+                        const channelData: ChatChannel = {
+                            name: name,
+                            description: description,
+                            permanent: permanent,
+                            admin: (admin && admin.length ? admin : firebaseAuth.currentUser.uid)
+                        }
+                        if (channelid && channelid.length > 0) {
+                            // Update the channel info
+                            await updateDoc(doc(firebaseDB, "channels", channelid), channelData);
+
+                            // Update the activity of the user
+                            await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
+                        }
+
+                        return { data: "Success" };
+                    }
+                    else {
+                        throw new Error("You must be logged on to edit channel information.");
+                    }
+                }
+                catch (error: any) {
+                    console.error("editChannel() ERROR", error);
+                    return { error: error.code };
+                }
+            },
+            invalidatesTags: ['Channels', 'Channel', 'Users'],
         }),
 
         // Get a list of all existing channels
@@ -463,5 +509,6 @@ export const {
     useJoinChannelMutation,
     useLeaveChannelMutation,
     useCreateChannelMutation,
+    useEditChannelMutation,
     useUnsubListenersMutation
 } = chatApi;

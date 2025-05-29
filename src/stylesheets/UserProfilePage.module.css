@@ -11,8 +11,8 @@
     margin: 0;
     padding: 0.5rem;
     font-size: 1.75rem;
-    background-color: black;
-    color: white;
+    background-color: var(--user-profile-heading-color-bg);
+    color: var(--user-profile-heading-color-text);
     width: 100%;
 }
 

@@ -56,6 +56,12 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    margin-top: 1rem;
+}
+
+.front-buttonlink img {
+    width: 18px;
+    height: 18px;
 }
 
 .front-buttonlink a {
@@ -66,6 +72,10 @@
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .front-buttonlink a:hover {

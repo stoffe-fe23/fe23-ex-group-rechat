@@ -1,24 +1,33 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import userIconNone from '/usericon-none.png';
-import userIconDef from '/usericon-default.png';
-import styles from "../stylesheets/UserProfileButton.module.css";
 import { useUserLoadQuery, useUserLogoutMutation } from '../datastore/userSlice';
 import { useUnsubListenersMutation } from '../datastore/chatSlice';
+
+import styles from "../stylesheets/UserProfileButton.module.css";
+import userIconNone from '/usericon-none.png';
+import userIconDef from '/usericon-default.png';
 
 
 export default function UserProfileButton(): React.JSX.Element {
 
     const navigate = useNavigate();
+
+    // Load the current user
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
+
+    // Functions used for logging off the current user
     const [userLogout, { isLoading: userLogoffIsLoading, isError: userIsLogoffError, error: userLogoffError }] = useUserLogoutMutation();
     const [unsubListeners, { isLoading: resetIsLoading, isError: resetIsError, error: resetError }] = useUnsubListenersMutation();
 
+    // Track if the user profile picture could not load, to use default icon instead. 
     const [isPictureBroken, setIsPictureBroken] = useState<boolean>(false);
 
+    // Logoff form submit handler
     function onLogoffSubmit(event: React.SyntheticEvent<HTMLFormElement>): void {
         event.preventDefault();
+        // Close any channel database update listeners
         unsubListeners();
+        // Log off user
         userLogout();
         navigate("/");
     }
@@ -30,7 +39,11 @@ export default function UserProfileButton(): React.JSX.Element {
     return (
         <>
             <div className={styles["user-profile-button"]}>
-                {(userIsError || userIsLogoffError || resetIsError) && <div className={styles['error-message']}>{userError as string}{userLogoffError as string}{resetError as string}</div>}
+                {(userIsError || userIsLogoffError || resetIsError) && <div className={styles['error-message']}>An error occurred! (
+                    {userError != undefined ? userError as string : ""}
+                    {userLogoffError != undefined ? userLogoffError as string : ""}
+                    {resetError != undefined ? resetError as string : ""}
+                    )</div>}
                 {userData && userData.authenticated && <div className={styles["user-profile-card"]}>
                     {(userLogoffIsLoading || resetIsLoading || userIsLoading) && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
                     <NavLink className={styles["picture-link"]} to="/user/profile"><img src={!isPictureBroken && userData.picture && userData.picture.length > 0 ? userData.picture : userIconDef} className={styles["picture"]} onError={onPictureError} /></NavLink>

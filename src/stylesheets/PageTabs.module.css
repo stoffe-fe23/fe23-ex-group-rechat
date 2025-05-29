@@ -33,3 +33,22 @@
 .page-tabs-tab a {
     color: var(--tab-inactive-color-text);
 }
+
+.error-message {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: darkred;
+    color: white;
+    padding: 0.25rem 1rem 0.25rem 2rem;
+    border-radius: 0px 0px 10px 0px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    background-image: url("/icons/icon-warning.png");
+    background-size: 18px 18px;
+    background-position: 0.5rem 0.2rem;
+    background-repeat: no-repeat;
+    z-index: 1;
+    box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}

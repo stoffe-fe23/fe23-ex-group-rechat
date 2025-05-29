@@ -15,10 +15,8 @@ import {
     reauthenticateWithCredential,
     sendEmailVerification,
     //    onAuthStateChanged,
-    //    updateProfile,
     //    deleteUser,
     //    sendPasswordResetEmail,
-    //    sendEmailVerification,
     //    EmailAuthProvider,
     //    reauthenticateWithCredential
 } from "firebase/auth";
@@ -97,7 +95,7 @@ export const authApi = firebaseApi.injectEndpoints({
                     }
 
                     console.log("userLogin()", userCredential.user);
-                    return { data: "Login successful." };
+                    return { data: userCredential.user.uid };
                 }
                 catch (error: any) {
                     return { error: error.code };
@@ -150,9 +148,11 @@ export const authApi = firebaseApi.injectEndpoints({
 
                         // Send a verification email with link to let user activate the new account
                         await sendEmailVerification(userCredential.user);
+                        return { data: userCredential.user.uid };
                     }
-
-                    return { data: "User Registration successful." };
+                    else {
+                        throw new FirebaseError("account-not-created", "The account could not be created!");
+                    }
                 }
                 catch (error: any) {
                     return { error: error.code };

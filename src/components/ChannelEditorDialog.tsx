@@ -1,0 +1,100 @@
+/*
+    Component displaying a modal dialog box with a channel editor form.  
+*/
+import React, { useEffect, useRef, useState } from 'react';
+import { useEditChannelMutation, useLoadUsersQuery } from '../datastore/chatSlice';
+import { ChatChannel } from '../typedefs/chatChannelTypes';
+
+import styles from "../stylesheets/ChannelEditorDialog.module.css";
+import iconEdit from "/icons/icon-edit.png";
+import iconCancel from "/icons/icon-stop.png";
+
+type ChannelEditorDialogProps = {
+    channelId: string,
+    name: string,
+    description: string,
+    permanent: boolean,
+    admin: string,
+    open: boolean,
+    onClose: () => void
+}
+
+export default function ChannelEditorDialog({ channelId, name, description, permanent, admin, open, onClose }: ChannelEditorDialogProps): React.JSX.Element {
+
+    const channelEditor = useRef<HTMLDialogElement>(null);
+    const [channelName, setChannelName] = useState<string>(name);
+    const [channelDesc, setChannelDesc] = useState<string>(description);
+    const [channelPerm, setChannelPerm] = useState<boolean>(permanent);
+    const [channelAdmin, setChannelAdmin] = useState<string>(admin);
+
+    console.log("Building editor form for", channelId);
+
+    // Load list of users in the specified channel
+    const { data: usersList, isLoading: listIsLoading, isError: listIsError, error: listError } = useLoadUsersQuery(channelId);
+
+    const [editChannel, { isLoading: editChannelIsLoading, isError: editChannelIsError, error: editChannelError }] = useEditChannelMutation();
+
+    useEffect(() => {
+        console.log("ChannelEditor UseState!");
+        if (channelEditor && channelEditor.current) {
+            if (open) {
+                channelEditor.current.showModal();
+            }
+            else {
+                channelEditor.current.close();
+            }
+        }
+        setChannelName(name);
+        setChannelDesc(description);
+        setChannelPerm(permanent);
+        setChannelAdmin(admin);
+
+    }, [open]);
+
+
+    // Form Submit handler - save changes
+    async function onEditorFormSubmit(evt: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
+        evt.preventDefault();
+        try {
+            await editChannel({ channelid: channelId, name: channelName, description: channelDesc, permanent: channelPerm, admin: channelAdmin } as ChatChannel).unwrap();
+            onClose();
+        }
+        catch (err: any) {
+            console.log("Edit channel error: ", err);
+        }
+    }
+
+    return (
+        <dialog ref={channelEditor} className={styles['channel-editor']}>
+            <form className={styles['channel-editor-form']} onSubmit={onEditorFormSubmit}>
+                <div>
+                    <label htmlFor="name">Channel name</label>
+                    <input type="text" name="name" id="name" value={channelName} onChange={(evt) => setChannelName(evt.target.value)} placeholder="Name of the new channel" minLength={4} maxLength={100} required></input>
+                </div>
+                <div>
+                    <label htmlFor="description">Short description of channel</label>
+                    <textarea id="description" name="description" value={channelDesc} onChange={(evt) => setChannelDesc(evt.target.value)} placeholder="Describe what the new channel is about." minLength={5} maxLength={1000} required></textarea>
+                </div>
+                <div className={styles['channel-create-permanent-wrapper']}>
+                    <input type="checkbox" name="permanent" id="permanent" defaultChecked={channelPerm} onChange={(evt) => setChannelPerm(evt.target.checked)}></input>
+                    <label htmlFor="permanent">Channel persists with no participants</label>
+                </div>
+                <div>
+                    <label htmlFor="admin">Channel admin</label>
+                    <select name="admin" id="admin" value={channelAdmin} onChange={(evt) => setChannelAdmin(evt.target.value)}>
+                        {usersList?.map((usr, idx) => <option key={usr.authid.length ? usr.authid : idx} value={usr.authid}>{usr.nickname}</option>)}
+                    </select>
+                </div>
+                {editChannelIsError || listIsError && <div className={styles['error-message']}> An error occurred when editing the channel! ({editChannelError != undefined ? editChannelError as string : ""}{listError != undefined ? listError as string : ""})</div>}
+                <button disabled={editChannelIsLoading || listIsLoading}>
+                    {editChannelIsLoading || listIsLoading && <div id="busy" className={styles['busy-editor']} title="Please wait..."></div>}
+                    <img src={iconEdit} alt="Edit channel info" />Save
+                </button>
+                <button disabled={editChannelIsLoading || listIsLoading} type="button" onClick={() => onClose()} formNoValidate>
+                    <img src={iconCancel} alt="Cancel channel editor" />Cancel
+                </button>
+            </form>
+        </dialog>
+    );
+}
+

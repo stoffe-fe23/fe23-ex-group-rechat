@@ -27,6 +27,11 @@
     font-size: 1rem;
 }
 
+.channel-user-admin {
+    font-weight: 700;
+    color: orange;
+}
+
 .channel-user-activity {
     grid-area: activity;
     font-size: 0.7rem;

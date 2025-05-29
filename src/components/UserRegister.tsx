@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-// import { NavLink } from 'react-router-dom';
-import userIconNone from '/usericon-default.png';
-import styles from "../stylesheets/UserRegister.module.css";
 import { useUserRegisterMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
-import iconUser from "/icons/icon-user-add.png";
 import PasswordChecker from './PasswordChecker';
+
+import styles from "../stylesheets/UserRegister.module.css";
+import userIconNone from '/usericon-default.png';
+import iconUser from "/icons/icon-user-add.png";
+
 
 function getFirebaseErrorMessage(code: string): string {
     let errorMessage = "";
@@ -13,7 +14,8 @@ function getFirebaseErrorMessage(code: string): string {
         case "auth/email-already-in-use": errorMessage = "The specified email address is already in use."; break;
         case "auth/weak-password": errorMessage = "The password must be at least 6 characters long."; break;
         case "auth/missing-password": errorMessage = "You must enter a password for your account."; break;
-        default: errorMessage = `Error: ${code}`; break;
+        case "account-not-created": errorMessage = "Error! The account could not be created!"; break;
+        default: errorMessage = `An error occurred! (${code})`; break;
     }
     return errorMessage;
 }
@@ -22,6 +24,8 @@ function getFirebaseErrorMessage(code: string): string {
 export default function UserRegister(): React.JSX.Element {
 
     const navigate = useNavigate();
+
+    // Form values
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -29,11 +33,13 @@ export default function UserRegister(): React.JSX.Element {
 
     const [userRegister, { isLoading: userRegisterIsLoading, isError: userRegisterIsError, error: userRegisterError }] = useUserRegisterMutation();
 
+    // Form submit handler - attempt to create new account
     async function onRegisterSubmit(evt: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         evt.preventDefault();
 
+        // Make sure user typed the same password twice
         if (password.length && passwordAgain.length && (password != passwordAgain)) {
-            alert("The password do not match, try again.");
+            alert("The entered passwords do not match, try again.");
             return;
         }
 

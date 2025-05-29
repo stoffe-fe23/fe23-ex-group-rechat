@@ -1,6 +1,7 @@
 import { useGetUserProfileListQuery, useLoadMessagesQuery } from "../datastore/chatSlice";
 import ChannelMessage from "./ChannelMessage";
 import { ChannelUserProfile } from "../typedefs/chatChannelTypes";
+
 import styles from "../stylesheets/ChannelMessages.module.css";
 
 
@@ -11,7 +12,10 @@ type ChannelMessagesProps = {
 
 export default function ChannelMessages({ channelId }: ChannelMessagesProps): React.JSX.Element {
 
+    // Load messages in this channel
     const { data: messagesList, isLoading: listIsLoading, isError: listIsError, error: listError } = useLoadMessagesQuery(channelId);
+
+    // Load lookup table for user nicknames and pictures
     const { data: usersList, isLoading: userListIsLoading, isError: userListIsError, error: userListError } = useGetUserProfileListQuery();
 
     return (
@@ -23,7 +27,7 @@ export default function ChannelMessages({ channelId }: ChannelMessagesProps): Re
                 messageData={msg}
                 authorData={(usersList ? usersList?.find((usr) => usr.authid == msg.author) : { authid: "", nickname: "Anonymous", picture: "" }) as ChannelUserProfile}
             />)}
-            {(listIsError || userListIsError) && <div className={styles['error-message']}>{listError as string}{userListError as string}</div>}
+            {(listIsError || userListIsError) && <div className={styles['error-message']}>An error occurred! ({listError != undefined ? listError as string : ""}{userListError != undefined ? userListError as string : ""})</div>}
         </div>
     );
 }

@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { useListChannelsQuery } from "../datastore/chatSlice";
 import ChannelListItem from "./ChannelListItem";
-import styles from "../stylesheets/ChannelJoinPage.module.css";
 import { useUserLoadQuery } from "../datastore/userSlice";
+
+import styles from "../stylesheets/ChannelJoinPage.module.css";
 
 
 export default function ChannelJoinPage(): React.JSX.Element {
@@ -13,7 +14,7 @@ export default function ChannelJoinPage(): React.JSX.Element {
     return (
         <>
             <section className={styles['channel-join']}>
-                {(listIsError || userIsError) && <div className="error-message">{listError as string}{userError as string}</div>}
+                {(listIsError || userIsError) && <div className="error-message">An error occurred! ({listError != undefined ? listError as string : ""}{userError != undefined ? userError as string : ""})</div>}
                 <div className={styles['leftcol']}>
                     <div className={styles['logo']}>Group <span>Re</span>Chat</div>
                     <h2>Join a channel</h2>

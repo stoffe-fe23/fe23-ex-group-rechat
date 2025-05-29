@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePostMessageMutation } from '../datastore/chatSlice';
+
 import styles from "../stylesheets/ChannelPostMessage.module.css";
 import iconTalk from "/icons/icon-talk-add.png";
 import iconEditor from "/icons/icon-editor.png";
@@ -12,17 +13,19 @@ type ChannelPostMessageProps = {
 export default function ChannelPostMessage({ channelId }: ChannelPostMessageProps): React.JSX.Element {
 
     const [message, setMessage] = useState('');
+
+    // Toggle textarea message editor on or off
     const [isExpandedEditor, setIsExpandedEditor] = useState<boolean>(false);
 
     const [postMessage, { isLoading: postIsLoading, isError: postIsError, error: postError }] = usePostMessageMutation();
 
+    // Form submit handler - post the new message to the channel
     async function onMessageSubmit(event: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
 
         try {
             if (channelId.length) {
                 await postMessage({ channelId: channelId, messageContent: message }).unwrap();
-                setIsExpandedEditor(false);
             }
             else {
                 throw new Error("No channel specified to post message to.");
@@ -33,8 +36,10 @@ export default function ChannelPostMessage({ channelId }: ChannelPostMessageProp
         }
 
         setMessage("");
+        setIsExpandedEditor(false);
     }
 
+    // Toggle showing the textarea input field instead of the oneliner text field.
     function onExpandClick(event: React.SyntheticEvent<HTMLButtonElement>): void {
         event.preventDefault();
         setIsExpandedEditor(!isExpandedEditor);
@@ -52,7 +57,7 @@ export default function ChannelPostMessage({ channelId }: ChannelPostMessageProp
                     <button className={styles['channel-new-button']} title="Send message" disabled={postIsLoading}><img className={styles['channel-new-button-icon']} src={iconTalk} /> Send</button>
                     {postIsLoading && <div id='busy' className={styles['busy']}></div>}
                 </form>
-                {postIsError && <div className={styles['error-message']}>{postError as string}</div>}
+                {postIsError && <div className={styles['error-message']}>An error occurred! ({postError as string})</div>}
             </div>
         </>
     );

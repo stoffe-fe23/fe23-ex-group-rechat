@@ -58,15 +58,6 @@ export type ChatUserData = {
     isactive: boolean
 }
 
-/*
-export type ChatUserState = {
-    userAuth: ChatUserAuth | null,
-    userProfile: ChatUserProfile | null,
-    authenticated: boolean
-
-}
-
-*/
 export type ChatUserState = {
     userAuth: User | null,
     userProfile: ChatUserProfile | null,

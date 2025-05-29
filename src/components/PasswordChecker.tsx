@@ -1,8 +1,9 @@
 /*
     Component for checking if two specified passwords match and are long enough.
-    Shows green or red indicator depending on the check. 
+    Shows green or red indicator dot depending on the check result. 
 */
 import React from 'react';
+
 import styles from "../stylesheets/PasswordChecker.module.css";
 
 
