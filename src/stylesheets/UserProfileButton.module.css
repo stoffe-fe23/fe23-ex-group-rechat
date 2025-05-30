@@ -1,6 +1,19 @@
+.user-profile-card {
+    display: grid;
+    justify-content: end;
+    align-items: center;
+    gap: 0 0.3rem;
+    padding: 0.3rem;
+    grid-template-areas: "picture nickname" "picture logoff";
+    grid-template-rows: 1fr auto;
+    position: relative;
+}
+
+
 .picture {
     height: 42px;
     width: auto;
+    border-radius: 50%;
 }
 
 .nickname {
@@ -22,23 +35,13 @@
     padding: 0.2rem;
 }
 
-.user-profile-card {
-    display: grid;
-    justify-content: end;
-    align-items: center;
-    gap: 0 0.7rem;
-    padding: 0.3rem;
-    grid-template-areas: "picture nickname" "picture logoff";
-    grid-template-rows: 1fr auto;
-    position: relative;
-}
-
 .picture-link {
     grid-area: picture;
 }
 
 .nickname-link {
     grid-area: nickname;
+    color: var(--tab-inactive-color-text);
 }
 
 .logoff-form {

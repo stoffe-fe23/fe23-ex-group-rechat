@@ -44,8 +44,8 @@ export default function UserRegister(): React.JSX.Element {
         }
 
         try {
-            const newUserData = await userRegister({ nickname, email, password }).unwrap();
-            console.log("REGISTER NEW USER:", newUserData);
+            const newUserID = await userRegister({ nickname, email, password }).unwrap();
+            console.log("REGISTER NEW USER:", newUserID);
             navigate("/user/login/new");
         }
         catch (error) {
@@ -65,9 +65,7 @@ export default function UserRegister(): React.JSX.Element {
                     <form onSubmit={onRegisterSubmit} className={styles['register-form']}>
                         <div>
                             <img src={userIconNone} alt="New user icon" />
-                            <h2>
-                                Create user account
-                            </h2>
+                            <h2>Create user account</h2>
                         </div>
                         <div>
                             <label htmlFor='nickname'>Screen name</label>

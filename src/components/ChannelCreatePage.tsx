@@ -40,7 +40,7 @@ export default function ChannelCreatePage(): React.JSX.Element {
                         </div>
                         <div>
                             <label htmlFor="description">Short description of channel</label>
-                            <textarea id="description" name="description" value={description} onChange={(evt) => setDescription(evt.target.value)} placeholder="Describe what the new channel is about." minLength={5} maxLength={1000} required></textarea>
+                            <textarea id="description" name="description" value={description} onChange={(evt) => setDescription(evt.target.value)} placeholder="Describe what the new channel is about." minLength={5} maxLength={255} required></textarea>
                         </div>
                         <div className={styles['channel-create-permanent-wrapper']}>
                             <input type="checkbox" name="permanent" id="permanent" checked={permanent} onChange={(evt) => setPermanent(evt.target.checked)}></input>

@@ -30,7 +30,7 @@ export default function ChannelLeaveButton(): React.JSX.Element {
             <form onSubmit={onLeaveSubmit}>
                 <button>
                     {leaveIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}
-                    <img src={iconExit} alt="Leave the channel." />Leave channel
+                    <img src={iconExit} alt="Leave the channel." /><span>Leave channel</span>
                 </button>
             </form>
             {leaveIsError && <div className={styles['error-message']}>An error occurred! ({leaveError != undefined ? leaveError as string : ""})</div>}

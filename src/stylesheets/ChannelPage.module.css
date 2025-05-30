@@ -136,3 +136,24 @@
     height: auto;
     margin: 0;
 }
+
+
+@media all and (max-width: 700px) {
+
+    .channel-page-users {
+        top: 75%;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        border-top: 1px solid var(--chat-header-color-bg);
+    }
+
+    .channel-page-messages {
+        top: 0px;
+        left: 0px;
+        bottom: 25%;
+        right: 0px;
+    }
+
+}

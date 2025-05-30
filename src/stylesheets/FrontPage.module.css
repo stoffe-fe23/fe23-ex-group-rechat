@@ -22,7 +22,7 @@
 
 .page-front-image h2 {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 10rem;
+    font-size: clamp(2rem, 20vw, 10rem);
     font-weight: 900;
     line-height: 100%;
 }
@@ -81,4 +81,21 @@
 .front-buttonlink a:hover {
     background-color: var(--button-hover-bg);
     color: var(--button-hover-text);
+}
+
+@media all and (max-width: 700px) {
+
+    .front-boxes {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .front-text {
+        margin: 1rem;
+        width: 100%;
+    }
+
 }

@@ -75,7 +75,7 @@
 
 .logo {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 7rem;
+    font-size: clamp(2rem, 20vw, 5.5rem);
     font-weight: 900;
     line-height: 100%;
 }
@@ -114,4 +114,51 @@
     z-index: 2;
     opacity: 0.9;
     border: 3px solid white;
+}
+
+@media all and (max-width: 700px) {
+    .channel-join {
+        position: relative;
+        top: auto;
+        left: auto;
+        bottom: auto;
+        right: auto;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: stretch;
+        height: auto;
+        width: 100%;
+    }
+
+    .channel-join h2 {
+        line-height: 100%;
+        margin-top: 0.5rem;
+    }
+
+
+    .rightcol {
+        width: 100%;
+        height: auto;
+    }
+
+    .leftcol {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .channel-join-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.5rem 0.5rem;
+        margin-top: 0;
+        margin-bottom: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: visible;
+    }
 }

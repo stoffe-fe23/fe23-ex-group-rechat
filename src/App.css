@@ -6,14 +6,26 @@
 }
 
 :root {
+    --font-heading: "Roboto Condensed", system-ui, Helvetica, Arial, sans-serif;
+    --font-content: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, Helvetica, Arial, sans-serif;
     --body-color-bg: rgba(60, 60, 60, 1.0);
     --body-color-text: white;
     --footer-color-bg: black;
     --footer-color-text: white;
+    --link-color-normal: lightsalmon;
+    --link-color-hover: orange;
+    --button-normal-bg: lightseagreen;
+    --button-normal-text: black;
+    --button-hover-bg: lightsalmon;
+    --button-hover-text: black;
     --tab-active-color-bg: grey;
     --tab-active-color-text: white;
     --tab-inactive-color-bg: lightgrey;
     --tab-inactive-color-text: black;
+    --nav-menu-color-bg: darkblue;
+    --nav-menu-color-active-bg: black;
+    --nav-menu-color-hover-bg: blue;
+    --nav-menu-color-text: white;
     --form-color-bg: black;
     --form-color-text: white;
     --user-button-color-bg: rgba(190, 190, 190, 0.8);
@@ -35,15 +47,9 @@
     --chat-channel-join-button-color-bg: black;
     --chat-channel-join-button-color-text: white;
     --chat-channel-join-button-color-name: orange;
-    --chat-channel-join-button-hover-bg: indigo;
+    --chat-channel-join-button-hover-bg: rgb(0, 0, 95);
     --chat-channel-join-button-hover-text: white;
     --chat-channel-join-button-hover-name: orange;
-    --button-normal-bg: lightseagreen;
-    --button-normal-text: black;
-    --button-hover-bg: lightsalmon;
-    --button-hover-text: black;
-    --font-heading: "Roboto Condensed", system-ui, Helvetica, Arial, sans-serif;
-    --font-content: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, Helvetica, Arial, sans-serif;
 }
 
 ::backdrop {
@@ -79,6 +85,14 @@ button {
     font-family: var(--font-heading);
 }
 
+a {
+    color: var(--link-color-normal);
+}
+
+a:hover {
+    color: var(--link-color-hover);
+}
+
 #root {
     max-width: 1600px;
     max-height: 100%;
@@ -111,6 +125,8 @@ header {
 #main-content {
     grid-area: main;
     overflow: auto;
+    scrollbar-color: var(--chat-header-color-bg) var(--chat-messagelist-color-bg);
+    scrollbar-width: thin;
     position: relative;
 }
 
@@ -118,6 +134,8 @@ footer {
     grid-area: footer;
     background-color: var(--footer-color-bg);
     color: var(--footer-color-text);
+    font-size: 0.8rem;
+    padding: 0.2rem 1rem;
 }
 
 .error-message {
@@ -170,5 +188,15 @@ footer {
 
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media all and (max-width: 700px) {
+    #root {
+        max-width: 1600px;
+        max-height: none;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
     }
 }

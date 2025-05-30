@@ -21,19 +21,21 @@ type ChannelEditorDialogProps = {
 
 export default function ChannelEditorDialog({ channelId, name, description, permanent, admin, open, onClose }: ChannelEditorDialogProps): React.JSX.Element {
 
+    // Dialog element reference to use for opening it as a modal dialog
     const channelEditor = useRef<HTMLDialogElement>(null);
+
+    // Form field states
     const [channelName, setChannelName] = useState<string>(name);
     const [channelDesc, setChannelDesc] = useState<string>(description);
     const [channelPerm, setChannelPerm] = useState<boolean>(permanent);
     const [channelAdmin, setChannelAdmin] = useState<string>(admin);
 
-    console.log("Building editor form for", channelId);
-
-    // Load list of users in the specified channel
+    // Load list of users in the specified channel - to populate the admin change menu.
     const { data: usersList, isLoading: listIsLoading, isError: listIsError, error: listError } = useLoadUsersQuery(channelId);
 
     const [editChannel, { isLoading: editChannelIsLoading, isError: editChannelIsError, error: editChannelError }] = useEditChannelMutation();
 
+    // React to open/closed state changes
     useEffect(() => {
         console.log("ChannelEditor UseState!");
         if (channelEditor && channelEditor.current) {
@@ -69,11 +71,11 @@ export default function ChannelEditorDialog({ channelId, name, description, perm
             <form className={styles['channel-editor-form']} onSubmit={onEditorFormSubmit}>
                 <div>
                     <label htmlFor="name">Channel name</label>
-                    <input type="text" name="name" id="name" value={channelName} onChange={(evt) => setChannelName(evt.target.value)} placeholder="Name of the new channel" minLength={4} maxLength={100} required></input>
+                    <input type="text" name="name" id="name" value={channelName} onChange={(evt) => setChannelName(evt.target.value)} placeholder="Name of the channel" minLength={4} maxLength={100} required></input>
                 </div>
                 <div>
                     <label htmlFor="description">Short description of channel</label>
-                    <textarea id="description" name="description" value={channelDesc} onChange={(evt) => setChannelDesc(evt.target.value)} placeholder="Describe what the new channel is about." minLength={5} maxLength={1000} required></textarea>
+                    <textarea id="description" name="description" value={channelDesc} onChange={(evt) => setChannelDesc(evt.target.value)} placeholder="Describe what the channel is about." minLength={5} maxLength={1000} required></textarea>
                 </div>
                 <div className={styles['channel-create-permanent-wrapper']}>
                     <input type="checkbox" name="permanent" id="permanent" defaultChecked={channelPerm} onChange={(evt) => setChannelPerm(evt.target.checked)}></input>

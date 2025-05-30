@@ -139,3 +139,13 @@
     box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.4);
     text-align: left;
 }
+
+@media all and (max-width: 700px) {
+    .columns {
+        flex-direction: column;
+    }
+
+    .field-item {
+        margin-bottom: 1rem;
+    }
+}
