@@ -1,5 +1,5 @@
 # Group ReChat
-# Exam Project Front-end Development 2023 at Grit Academy
+## Exam Project - Front-end Development course at Grit Academy 2025 by Kristoffer Bengtsson (FE23)
 
 A simple real-time textbased web chat application build in React/Redux with a Google Firebase backend. Written in TypeScript. 
 
