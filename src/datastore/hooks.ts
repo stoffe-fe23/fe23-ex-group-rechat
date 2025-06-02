@@ -1,4 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
 
+    Redux Hooks boilerplate.  
+*/
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import type { AppDispatch, AppStore, RootState } from './store';
 

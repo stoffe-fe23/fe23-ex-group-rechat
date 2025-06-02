@@ -1,8 +1,13 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component with an editor form for a chat message.  
+*/
 import { useState } from "react";
 import { useEditMessageMutation } from "../datastore/chatSlice";
 
 import styles from "../stylesheets/ChannelMessageEdit.module.css";
-import iconTalk from "/icons/icon-talk.png";
+import iconTalk from "/icons/icon-check.png";
 
 
 type ChannelMessageEditProps = {
@@ -25,7 +30,7 @@ export default function ChannelMessageEdit({ messageId, messageText, editMessage
             editMessageCallback("Message edited.");
         }
         catch (err) {
-            console.log("OnEditMessage error:", messageId, err);
+            console.error("Error editing message:", messageId, err);
         }
     }
 

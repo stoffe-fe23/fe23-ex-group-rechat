@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component for a single message in a chat channel. Also contains controls to edit the message
+    if the current user is its author. 
+*/
 import { ChannelUserProfile, ChatMessage } from "../typedefs/chatChannelTypes";
 import ChannelMessageEdit from "./ChannelMessageEdit";
 import { useState } from "react";
@@ -7,7 +13,7 @@ import Markdown from "react-markdown";
 
 import iconEdit from "/icons/icon-edit.png";
 import iconDelete from "/icons/icon-trash.png";
-import iconCancel from "/icons/icon-stop.png";
+import iconCancel from "/icons/icon-cross.png";
 import userIconDef from '/usericon-default.png';
 import styles from "../stylesheets/ChannelMessage.module.css";
 
@@ -64,7 +70,7 @@ export default function ChannelMessage({ messageData, authorData }: ChannelMessa
                     deleteMessage(messageData.messageid);
                 }
                 catch (error: any) {
-                    console.log("OnDelete error: ", error);
+                    console.error("Error deleting message: ", error);
                 }
             }
         }
@@ -76,15 +82,10 @@ export default function ChannelMessage({ messageData, authorData }: ChannelMessa
         setShowingEditForm(false);
     }
 
-    // Author picture could not be loaded, set use of default icon instead
-    function onPictureError(): void {
-        setIsPictureBroken(true);
-    }
-
     return (
         <>
             <div className={styles['channel-message']}>
-                <img className={styles['channel-message-picture']} src={!isPictureBroken && authorData.picture && authorData.picture.length ? authorData.picture : userIconDef} alt="User picture" onError={onPictureError} />
+                <img className={styles['channel-message-picture']} src={!isPictureBroken && authorData.picture && authorData.picture.length ? authorData.picture : userIconDef} alt="User picture" onError={() => setIsPictureBroken(true)} />
                 <div className={styles['channel-message-name']}>{authorData.nickname}</div>
                 <div className={styles['channel-message-date']}>{timestampToDateString(messageData.postdate as number)}</div>
                 {!showingEditForm && <div className={styles['channel-message-text']}><Markdown disallowedElements={markdownDisallow}>{messageData.content}</Markdown></div>}

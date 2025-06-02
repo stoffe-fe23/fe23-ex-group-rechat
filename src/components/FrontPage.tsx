@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component for the front page of the site.  
+*/
 import { NavLink } from "react-router-dom";
 
 import styles from "../stylesheets/FrontPage.module.css";

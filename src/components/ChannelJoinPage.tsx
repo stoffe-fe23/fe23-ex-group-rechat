@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component showing a list of existing channels to join, and a button linking to creating a new channel.  
+*/
 import { NavLink } from "react-router-dom";
 import { useListChannelsQuery } from "../datastore/chatSlice";
 import ChannelListItem from "./ChannelListItem";

@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Main react boilerplate script.
+    Connect Redux Store and Router to App component.  
+*/
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from "./datastore/store";

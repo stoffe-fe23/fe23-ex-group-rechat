@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component with a card for a user in the user list of a channel.  
+*/
 // import { NavLink } from "react-router-dom";
 import { ChannelUser } from "../typedefs/chatChannelTypes";
 import { useEffect, useState } from "react";

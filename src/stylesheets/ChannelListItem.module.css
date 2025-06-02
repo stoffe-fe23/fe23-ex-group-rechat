@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for a channel button in the list of joinable channels. 
+*/
 .channel-list-item {
     background-color: var(--chat-channel-join-button-color-bg);
     color: var(--chat-channel-join-button-color-text);

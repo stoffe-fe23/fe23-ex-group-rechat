@@ -1,8 +1,12 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Redux Store setup, adds RTK Query reducers to the store.  
+*/
 import { configureStore } from "@reduxjs/toolkit";
 import { firebaseApi } from "../api/firebase-api";
 
 
-// Configure Redux store, add in RTK Query reducers
 export const store = configureStore({
     reducer: {
         [firebaseApi.reducerPath]: firebaseApi.reducer,

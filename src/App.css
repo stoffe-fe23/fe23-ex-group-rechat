@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Main stylesheet for App component. Basic styling for the whole page.
+    Variables for colors to make it easier to implement Dark/Light mode down the line. 
+*/
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
@@ -10,6 +16,7 @@
     --font-content: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, Helvetica, Arial, sans-serif;
     --body-color-bg: rgba(60, 60, 60, 1.0);
     --body-color-text: white;
+    --body-color-text-highlight: orange;
     --footer-color-bg: black;
     --footer-color-text: white;
     --link-color-normal: lightsalmon;

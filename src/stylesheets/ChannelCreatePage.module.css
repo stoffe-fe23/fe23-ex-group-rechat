@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for the Create Channel page component. 
+*/
 .channel-create {
     background-color: var(--tab-active-color-bg);
     display: flex;

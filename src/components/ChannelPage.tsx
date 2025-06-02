@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component for the chat channel page. Contains info about the channel, a list of users in the channel and a list of messages,
+    as well as buttons to edit and leave the channel, and a form to post new messages.   
+*/
 import { NavLink, useParams } from "react-router-dom";
 import ChannelMessages from "./ChannelMessages";
 import ChannelPostMessage from "./ChannelPostMessage";
@@ -23,6 +29,7 @@ export default function ChannelPage(): React.JSX.Element {
     // Fetch the channel ID from the page route (/channel/:channelId)
     const { channelId } = useParams<string>();
 
+    // State controlling if the channel editor dialog box is open.
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
 
     // Load the current user
@@ -38,7 +45,7 @@ export default function ChannelPage(): React.JSX.Element {
         if (channelId && channelId.length && userData && (channelId != userData.channelid)) {
             joinChannel(channelId);
         }
-    }, [userData, joinChannel]);
+    }, [userData, joinChannel, channelId]);
 
 
 
@@ -52,7 +59,7 @@ export default function ChannelPage(): React.JSX.Element {
 
     return (
         <>
-            {!isLoggedIn(userData) && <section className={styles['channel-page']}>
+            {(!isLoggedIn(userData) && !channelIsLoading && !userIsLoading && !joinIsLoading) && <section className={styles['channel-page']}>
                 <div className={styles['login-message']}>You must be logged on to join a channel. <NavLink to="/user/login">Go to the login page.</NavLink></div>
             </section>}
             {isLoggedIn(userData) && <section className={styles['channel-page']}>

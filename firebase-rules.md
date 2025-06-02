@@ -1,7 +1,8 @@
 # Group ReChat
 ## Firebase firestore security rules
 
-Includes some business logic (against best practice) to allow the app to run on the subscription-free version of the Firebase service (i.e. no server-side functions available).
+Security rules for the Firestore database used by the app. 
+Includes some business logic (against best practice) to allow the app to run on the subscription-free version of the Firebase service (i.e. with no server-side functions available).
 
 ```js
 rules_version = '2';

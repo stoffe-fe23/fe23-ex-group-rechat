@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component for the login form page.  
+*/
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUserLoginMutation } from '../datastore/userSlice';
@@ -13,7 +18,7 @@ type UserLoginProps = {
     isNewUser: boolean
 }
 
-// Translate relevant Firebase error messages to something slightly more human friendly. 
+// Translate relevant Firebase error messages to something slightly more human friendly to display. 
 function getFirebaseErrorMessage(code: string): string {
     let errorMessage = "";
     switch (code) {
@@ -43,14 +48,16 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
         event.preventDefault();
 
         try {
-            const userID = await userLogin({ email, password } as LoginData).unwrap();
-            console.log("LOGIN SUCCESS:", userID);
+            await userLogin({ email, password } as LoginData).unwrap();
+
+            // Login successful, clear form fields and move to channel join page. 
             setEmail("");
             setPassword("");
             navigate("/channels");
         }
-        catch (err) {
-            console.log("LOGIN FAILURE:", err);
+        catch (err: any) {
+            // Login failed, clear the password field
+            console.error("Login error", err);
             setPassword("");
         }
     }
@@ -82,13 +89,15 @@ export default function UserLogin({ isNewUser }: UserLoginProps): React.JSX.Elem
                         <div className={styles['login-register-link']}>
                             <NavLink to="/user/register">Create user account</NavLink>
                         </div>
+                        <div className={styles['login-reset-link']}>
+                            <NavLink to="/user/passwordreset">Forgot your password?</NavLink>
+                        </div>
                     </form>
                 </div>
                 <div className={styles['login-rightcol']}>
                     {!isNewUser && <div className={styles['login-logo']}>Group <span>Re</span>Chat</div>}
                     {isNewUser && <div className={styles['new-login-info']}>
-                        <h3>Important</h3>
-                        <div>Welcome! Please check your email inbox for an email verification message and click on the link provided to activate your account before logging in.</div>
+                        <div><strong>Note! </strong>Please check your email inbox for an email verification message and click on the link provided to activate your account before logging in.</div>
                     </div>}
                 </div>
             </section>

@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component with a list of all participating users in the specified channel.   
+*/
 import { useLoadUsersQuery } from "../datastore/chatSlice";
 import ChannelUserItem from "./ChannelUserItem";
 

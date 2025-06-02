@@ -1,5 +1,10 @@
-import { User } from "firebase/auth"
-import { FieldValue } from "firebase/firestore"
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Type definitions used by the userSlice endpoints. 
+*/
+import { User } from "firebase/auth";
+import { FieldValue } from "firebase/firestore";
 
 
 export type LoginData = {

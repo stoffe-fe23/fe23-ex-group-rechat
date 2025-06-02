@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component displaying a button for a channel (in the list of channels available to join). 
+*/
 import { NavLink } from "react-router-dom";
 
 import styles from "../stylesheets/ChannelListItem.module.css";

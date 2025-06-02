@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for the User Login page component. 
+*/
 .login-page {
     background-color: var(--tab-active-color-bg);
     display: flex;
@@ -80,9 +85,10 @@
 }
 
 .new-login-info {
-    background-color: lightskyblue;
+    background-color: var(--form-color-bg);
+    color: var(--body-color-text);
     width: 250px;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -90,6 +96,11 @@
     align-items: center;
     box-shadow: 3px 3px 12px rgba(10, 10, 10, 0.4);
     text-align: left;
+    font-size: 0.9rem;
+}
+
+.new-login-info strong {
+    color: var(--body-color-text-highlight);
 }
 
 .new-login-info h3 {
@@ -100,13 +111,19 @@
 
 .login-logo {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 7rem;
+    font-size: clamp(2rem, 20vw, 5.5rem);
     font-weight: 900;
     line-height: 100%;
 }
 
 .login-logo span {
     color: rgb(255, 165, 0, 0.8);
+}
+
+.login-register-link,
+.login-reset-link {
+    font-size: 0.9rem;
+    line-height: 100%;
 }
 
 .error-message {
@@ -120,4 +137,39 @@
     left: 0px;
     margin-top: 0.2rem;
     margin-left: 0.3rem;
+}
+
+@media all and (max-width: 700px) {
+
+    .login-page {
+        background-color: var(--tab-active-color-bg);
+        flex-direction: column;
+        width: 100%;
+        background-image: url('/dummy-image1.jpg');
+        background-size: cover;
+        background-position: center center;
+        padding: 1rem 1rem 2rem 1rem;
+    }
+
+    .login-leftcol {
+        order: 2;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-rightcol {
+        order: 1;
+        width: 100%;
+        background-image: none;
+    }
+
+    .login-logo {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: clamp(2rem, 20vw, 4rem);
+        font-weight: 900;
+        line-height: 100%;
+    }
+
 }

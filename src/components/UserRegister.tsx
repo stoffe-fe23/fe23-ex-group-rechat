@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component for the New User registration form.   
+*/
 import React, { useState } from 'react';
 import { useUserRegisterMutation } from '../datastore/userSlice';
 import { useNavigate } from 'react-router';
@@ -44,12 +49,13 @@ export default function UserRegister(): React.JSX.Element {
         }
 
         try {
-            const newUserID = await userRegister({ nickname, email, password }).unwrap();
-            console.log("REGISTER NEW USER:", newUserID);
+            await userRegister({ nickname, email, password }).unwrap();
+
+            // Move to special version of login page with a message about activating the account
             navigate("/user/login/new");
         }
         catch (error) {
-            console.error("REGISTER NEW USER ERROR:", error);
+            console.error("Error registering new user:", error);
             setPassword("");
             setPasswordAgain("");
         }

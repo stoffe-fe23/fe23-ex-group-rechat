@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for component listing all users participating in a channel. 
+*/
 .channel-users-list {
     overflow-y: auto;
     scrollbar-color: var(--chat-header-color-bg) var(--chat-userlist-color-bg);

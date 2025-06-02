@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Main App component. Basic page structure, React Router for pages.
+    Load logged on user from Firebase Auth.  
+*/
 import { useEffect } from 'react';
 import { Routes, Route, useBeforeUnload } from 'react-router-dom';
 import { useAppDispatch } from './datastore/hooks';
@@ -9,6 +15,7 @@ import UserLogin from './components/UserLogin';
 import UserProfileButton from './components/UserProfileButton';
 import UserRegister from './components/UserRegister';
 import UserProfilePage from './components/UserProfilePage';
+import UserForgotPassword from './components/UserForgotPassword';
 import FrontPage from './components/FrontPage';
 import PageNotFound from './components/PageNotFound';
 import ChannelJoinPage from './components/ChannelJoinPage';
@@ -18,6 +25,7 @@ import PageTabs from './components/PageTabs';
 
 import './App.css';
 
+
 function App() {
     const dispatch = useAppDispatch();
     const { data: userData, isLoading: userIsLoading, isError: userIsError, error: userError } = useUserLoadQuery();
@@ -25,8 +33,8 @@ function App() {
     // Page is closed
     useBeforeUnload((/* evt */) => {
         // TODO: Mark current user as inactive, if logged on
-        // If this is even possible, seems like you can't expect any async functionality, like DB/API calls, 
-        // here to finish running before the browser closes the page, interrupting the operation.
+        // If this is even somehow possible? Seems like you can't expect any async functionality, like DB/API calls, 
+        // to finish successfully before the browser closes the page, interrupting the operation.
         console.log("UNLOAD!");
     });
 
@@ -37,7 +45,6 @@ function App() {
         });
     }, [userData, dispatch]);
 
-    // Main App component with SPA page router.
     return (
         <>
             <main id="page" aria-live="assertive">
@@ -52,6 +59,7 @@ function App() {
                         <Route path="/" element={<FrontPage />} />
                         <Route path="/user/login" element={<UserLogin isNewUser={false} />} />
                         <Route path="/user/login/new" element={<UserLogin isNewUser={true} />} />
+                        <Route path="/user/passwordreset" element={<UserForgotPassword />} />
                         <Route path="/user/register" element={<UserRegister />} />
                         <Route path="/user/profile" element={<UserProfilePage />} />
                         <Route path="/channels" element={<ChannelJoinPage />} />

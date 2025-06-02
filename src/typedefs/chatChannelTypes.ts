@@ -1,4 +1,9 @@
-import { FieldValue } from "firebase/firestore"
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Type definitions used by the chatSlice endpoints. 
+*/
+import { FieldValue } from "firebase/firestore";
 
 export type NewMessageParams = {
     channelId: string,

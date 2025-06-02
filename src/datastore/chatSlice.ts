@@ -1,6 +1,8 @@
 /*
-    Endpoints for managing chat channels, messages and participating users.
-    Uses the Firebase Firestore database service to store data about channels and messages. 
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    RTK Query Endpoints for managing chat channels, messages and participating user lists.
+    Uses the Firebase Firestore database service to store data via the Firebase SDK. 
 */
 import { firebaseAuth, firebaseDB } from '../api/firebase-init';
 import { firebaseApi } from '../api/firebase-api';
@@ -8,8 +10,8 @@ import { doc, updateDoc, serverTimestamp, addDoc, collection, query, orderBy, li
 import { ChannelUser, ChannelUserProfile, ChatChannel, ChatMessage, EditMessageParams, NewMessageParams } from '../typedefs/chatChannelTypes';
 
 // Store database listener unsubscribe handlers here so they can be manually closed. 
-let dbUsersListenerUnsubscribe: Unsubscribe[] = [];
-let dbMessagesListenerUnsubscribe: Unsubscribe[] = [];
+const dbUsersListenerUnsubscribe: Unsubscribe[] = [];
+const dbMessagesListenerUnsubscribe: Unsubscribe[] = [];
 
 
 export const chatApi = firebaseApi.injectEndpoints({
@@ -18,7 +20,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         loadUsers: builder.query<ChannelUser[], string>({
             // Load and cache initial data 
             async queryFn(channelId) {
-                console.log("DEBUG: LOADUSERS START", channelId);
                 try {
                     const userList: ChannelUser[] = [];
                     const qry = query(
@@ -34,7 +35,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                         usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
                         userList.push(usr);
                     });
-                    console.log(">>>> USERLIST INIT", userList);
 
                     return { data: userList };
                 }
@@ -47,8 +47,6 @@ export const chatApi = firebaseApi.injectEndpoints({
             async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
                 let unsubHandle;
                 try {
-                    console.log("Userslist database listener...", arg);
-
                     // Look for users in the specified channel
                     const qry = query(
                         collection(firebaseDB, "users"),
@@ -58,28 +56,25 @@ export const chatApi = firebaseApi.injectEndpoints({
                     );
                     // Set the database listener to receive updates
                     unsubHandle = onSnapshot(qry, (snapshot) => {
-                        console.log("Channel users onShapshot", snapshot.docs);
                         updateCachedData(() => {
                             const userList = snapshot.docs.map((doc) => {
                                 const usr = doc.data() as ChannelUser;
                                 usr.activity = usr.activity != null ? (usr.activity as Timestamp).seconds : 0;
                                 return usr;
                             });
-                            console.log("Channel users cache update");
                             return userList as ChannelUser[];
                         });
                     });
                     dbUsersListenerUnsubscribe.push(unsubHandle);
                 }
                 catch (error: any) {
-                    console.log('ERROR IN loadUsers() onCacheEntryAdded', error);
+                    console.error('ERROR IN loadUsers() onCacheEntryAdded', error);
                     throw new Error(`Unable to load channel userlist: ${error.message}`);
                 }
 
                 await cacheEntryRemoved;
                 if (unsubHandle) {
                     unsubHandle();
-                    console.log("UsersDB UNSUB!");
                 }
             },
             providesTags: ['Users'],
@@ -89,7 +84,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         loadMessages: builder.query<ChatMessage[], string>({
             // Load and cache initial message data
             async queryFn(channelId) {
-                console.log("DEBUG: LOADMESSAGES START", channelId);
                 try {
                     const messageList: ChatMessage[] = [];
                     const qry = query(
@@ -119,7 +113,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                 let unsubHandle;
                 try {
                     await cacheDataLoaded;
-                    console.log("Messages database listener...", arg);
 
                     // Look for messages in the specified channel, cap at the 1000 latest
                     const qry = query(
@@ -137,21 +130,19 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 msgData.postdate = msgData.postdate != null ? (msgData.postdate as Timestamp).seconds : 0;
                                 return msgData;
                             });
-                            console.log("Message cache update");
                             return msgList as ChatMessage[];
                         });
                     });
                     dbMessagesListenerUnsubscribe.push(unsubHandle);
                 }
                 catch (error: any) {
-                    console.log('ERROR IN loadMessages() onCacheEntryAdded', error);
+                    console.error('ERROR IN loadMessages() onCacheEntryAdded', error);
                     throw new Error(`Unable to load channel messages: ${error.message}`);
                 }
 
                 await cacheEntryRemoved;
                 if (unsubHandle) {
                     unsubHandle();
-                    console.log("MessageDB UNSUB!");
                 }
             },
             providesTags: ['Messages'],
@@ -162,7 +153,6 @@ export const chatApi = firebaseApi.injectEndpoints({
             async queryFn({ channelId, messageContent }) {
                 try {
                     // Check that the channel with the specified ID actually exists
-                    console.log("DEBUG: POSTMESSAGE START", channelId);
                     if (firebaseAuth.currentUser) {
                         const chanDoc = await getDoc(doc(firebaseDB, "channels", channelId));
                         if (chanDoc.exists()) {
@@ -174,7 +164,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                             }
                             const newDocRef = await addDoc(collection(firebaseDB, 'messages'), newMsg);
                             await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
-                            console.log("Created new message", newDocRef.id);
+                            return { data: newDocRef.id };
                         }
                         else {
                             throw new Error("There is no channel with the specified channel ID.")
@@ -197,7 +187,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         editMessage: builder.mutation<string, EditMessageParams>({
             async queryFn({ messageId, messageContent }) {
                 try {
-                    console.log("DEBUG: EDITMESSAGE START", messageId, messageContent);
                     if (messageId.length > 0) {
                         if (firebaseAuth.currentUser) {
                             // Check that the specified message actually exists.
@@ -208,7 +197,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 if (msg && msg.author && (msg.author == firebaseAuth.currentUser.uid)) {
                                     await updateDoc(doc(firebaseDB, "messages", messageId), { content: messageContent });
                                     await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
-                                    console.log("Edit message", messageId, messageContent);
                                 }
                                 else {
                                     throw new Error("You may only edit messages you have posted.");
@@ -239,7 +227,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         deleteMessage: builder.mutation<string, string>({
             async queryFn(messageId) {
                 try {
-                    console.log("DEBUG: DELETEMESSAGE START", messageId);
                     if (messageId.length > 0) {
                         if (firebaseAuth.currentUser) {
                             // Check that the specified message actually exists.
@@ -250,7 +237,6 @@ export const chatApi = firebaseApi.injectEndpoints({
                                 if (msg && msg.author && (msg.author == firebaseAuth.currentUser.uid)) {
                                     await deleteDoc(doc(firebaseDB, "messages", messageId));
                                     await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { activity: serverTimestamp() });
-                                    console.log("Deleted message", messageId);
                                 }
                                 else {
                                     throw new Error("You may only delete messages you have posted.");
@@ -281,7 +267,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         joinChannel: builder.mutation<string, string>({
             async queryFn(channelId) {
                 try {
-                    console.log("DEBUG: JOINCHANNEL START", channelId);
                     if (firebaseAuth.currentUser) {
                         const channelDoc = await getDoc(doc(firebaseDB, "channels", channelId));
                         // const response = await queryApi.dispatch(api.endpoints.getQuote.initiate(someArgsHere))`
@@ -305,7 +290,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         leaveChannel: builder.mutation<string, void>({
             async queryFn() {
                 try {
-                    console.log("DEBUG: LEAVECHANNEL START");
                     if (firebaseAuth.currentUser) {
                         await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { channelid: "", activity: serverTimestamp() });
                     }
@@ -323,7 +307,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         unsubListeners: builder.mutation<string, void>({
             async queryFn() {
                 try {
-                    console.log(">>>>>>> DEBUG: RESETLISTENERS", dbMessagesListenerUnsubscribe.length, dbUsersListenerUnsubscribe.length);
                     if (dbUsersListenerUnsubscribe.length) {
                         dbUsersListenerUnsubscribe.forEach((unsubHandle) => {
                             if (unsubHandle)
@@ -338,7 +321,7 @@ export const chatApi = firebaseApi.injectEndpoints({
                         });
                         dbMessagesListenerUnsubscribe.length = 0;
                     }
-                    return { data: "Database listeners reset." };
+                    return { data: "Database listeners closed." };
                 }
                 catch (error: any) {
                     console.error("resetListeners() ERROR", error);
@@ -352,7 +335,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         createChannel: builder.mutation<string, ChatChannel>({
             async queryFn({ name, description, permanent }) {
                 try {
-                    console.log("DEBUG: CREATECHANNEL START", name, description, permanent);
                     if (firebaseAuth.currentUser) {
                         const newChannel: ChatChannel = {
                             name: name,
@@ -385,7 +367,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         editChannel: builder.mutation<string, ChatChannel>({
             async queryFn({ channelid, name, description, permanent, admin }) {
                 try {
-                    console.log("DEBUG: EDITCHANNEL START", channelid, name, description, permanent, admin);
                     if (firebaseAuth.currentUser) {
                         const channelData: ChatChannel = {
                             name: name,
@@ -418,7 +399,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         // Get a list of all existing channels
         listChannels: builder.query<ChatChannel[], void>({
             async queryFn() {
-                console.log("DEBUG: LISTCHANNELS START");
                 try {
                     const channelList: ChatChannel[] = [];
                     const channelDocs = await getDocs(query(collection(firebaseDB, 'channels'), orderBy("name", "asc")));
@@ -441,7 +421,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         // Get information about a specific channel
         getChannel: builder.query<ChatChannel, string>({
             async queryFn(channelId) {
-                console.log("DEBUG: GETCHANNEL START");
                 try {
                     if ((channelId != undefined) && (channelId.length > 1)) {
                         const channelDoc = await getDoc(doc(firebaseDB, "channels", channelId));
@@ -465,7 +444,6 @@ export const chatApi = firebaseApi.injectEndpoints({
         // Get a list of all user profiles for resolving name and picture from UIDs
         getUserProfileList: builder.query<ChannelUserProfile[], void>({
             async queryFn() {
-                console.log("DEBUG: GETUSERPROFILELIST START");
                 try {
                     const profileList: ChannelUserProfile[] = [];
                     const qry = query(

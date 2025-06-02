@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component listing all messages belonging to the specified chat channel. 
+*/
 import { useGetUserProfileListQuery, useLoadMessagesQuery } from "../datastore/chatSlice";
 import ChannelMessage from "./ChannelMessage";
 import { ChannelUserProfile } from "../typedefs/chatChannelTypes";

@@ -1,6 +1,10 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component for the User Profile page, allowing the current user to update their
+    profile information or change their email address or password.   
+*/
 import React, { useEffect, useState } from 'react';
-// import { NavLink } from 'react-router-dom';
-// import userIconNone from '/usericon-none.png';
 import userIconDef from '/usericon-default.png';
 import iconCheck from "/icons/icon-check.png";
 import styles from "../stylesheets/UserProfilePage.module.css";
@@ -37,6 +41,7 @@ export default function UserProfilePage(): React.JSX.Element {
     const [picture, setPicture] = useState(userData?.picture ?? "");
 
     const [isPictureBroken, setIsPictureBroken] = useState<boolean>(false);
+    const [statusMessage, setStatusMessage] = useState<string>("");
 
     // Load current values into relevant form fields. 
     useEffect(() => {
@@ -52,15 +57,19 @@ export default function UserProfilePage(): React.JSX.Element {
 
         try {
             if (password.length && passwordAgain.length && (password != passwordAgain)) {
-                alert("New password does not match, try again.");
+                alert("The new password does not match, try again.");
             }
 
-            const editUserData = await userEdit({ nickname, email, picture, password, currentPassword }).unwrap();
-            console.log("onProfileEditSubmit()", { nickname, email, picture, password, currentPassword }, editUserData);
+            await userEdit({ nickname, email, picture, password, currentPassword }).unwrap();
+
+            // Inform user changes have been saved, hide message after 5 sec. 
+            setStatusMessage("Profile changes saved!");
+            setTimeout(() => setStatusMessage(""), 5000);
         }
         catch (error: any) {
-            console.log("Profile update error:", error);
+            console.error("Profile update error:", error);
             setEmail(userData?.email ?? "");
+            setStatusMessage("");
         }
     }
 
@@ -104,7 +113,7 @@ export default function UserProfilePage(): React.JSX.Element {
                                     <h3>Change email address</h3>
                                     <label htmlFor='email'>E-mail address</label>
                                     <input type="email" name="email" id="email" value={email} onChange={(evt) => setEmail(evt.target.value)} required />
-                                    <div className={styles['description']}>Note: Changing your email will send a new verification message to the specified e-mail address. <strong>Your account will be locked until you click the link in that message.</strong></div>
+                                    <div className={styles['description']}>Note: Changing your email will send a new verification message to the specified e-mail address. <strong>The address will not be changed until you have verified the new address!</strong></div>
                                 </div>
 
                                 <div className={styles['field-item']}>
@@ -127,6 +136,7 @@ export default function UserProfilePage(): React.JSX.Element {
                         </div>
                         {userEditIsError && <div className={styles['error-message']}>{getFirebaseErrorMessage(userEditError as string)} </div>}
                         {userIsError && <div className={styles['error-message']}>{getFirebaseErrorMessage(userError as string)}</div>}
+                        {(statusMessage.length > 0) && <div className={styles['status-message']}>{statusMessage}</div>}
                         <div className={styles['form-buttons']}>
                             <button disabled={userEditIsLoading}>
                                 {userIsLoading || userEditIsLoading && <div id="busy" className={styles['busy']} title="Please wait..."></div>}

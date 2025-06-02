@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for the chat channel page component. 
+*/
 .channel-page {
     position: absolute;
     top: 0px;
@@ -11,15 +16,31 @@
     color: var(--chat-header-color-text);
     height: 50px;
     position: relative;
+    display: grid;
+    grid-template-columns: 30% auto;
+    grid-template-areas: "channel-title channel-desc";
+    align-items: center;
+    justify-content: start;
 }
 
 .channel-page-title {
+    grid-area: channel-title;
     margin: 0;
-    font-size: 1.6rem;
+    padding: 0.2rem;
+    max-height: 100%;
+    overflow: auto;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    line-height: 100%;
 }
 
 .channel-page-desc {
+    grid-area: channel-desc;
     font-size: 0.75rem;
+    padding: 0.5rem;
+    max-height: 100%;
+    overflow: auto;
+    text-align: left;
 }
 
 .channel-page-content {

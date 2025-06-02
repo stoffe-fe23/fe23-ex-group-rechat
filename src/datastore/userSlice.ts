@@ -1,5 +1,7 @@
 /*
-    Endpoints for managing the current user: Registration, login/logoff, user profile etc. 
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    RTK Query Endpoints for managing the current user: Registration, login/logoff, user profile etc. 
     Uses the Firebase Authentication service for account management, and the Firestore
     database for keeping extra profile data for easier access to show other users. 
 */
@@ -10,15 +12,11 @@ import {
     signOut,
     createUserWithEmailAndPassword,
     updatePassword,
-    updateEmail,
     EmailAuthProvider,
     reauthenticateWithCredential,
     sendEmailVerification,
-    //    onAuthStateChanged,
-    //    deleteUser,
-    //    sendPasswordResetEmail,
-    //    EmailAuthProvider,
-    //    reauthenticateWithCredential
+    verifyBeforeUpdateEmail,
+    sendPasswordResetEmail
 } from "firebase/auth";
 import { firebaseApi } from '../api/firebase-api';
 import { ChatUserProfile, ChatUserData, LoginData } from '../typedefs/chatUserTypes';
@@ -64,11 +62,9 @@ export const authApi = firebaseApi.injectEndpoints({
 
                             if (!docUserProfileData.isactive) {
                                 await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), { isactive: true, activity: serverTimestamp() });
-                                console.log("Setting user as ONLINE!");
                             }
                         }
                     }
-                    console.log("userLoad()", userState);
                     return { data: userState };
                 }
                 catch (error: any) {
@@ -83,7 +79,6 @@ export const authApi = firebaseApi.injectEndpoints({
         userLogin: builder.mutation<string, LoginData>({
             async queryFn({ email, password }) {
                 try {
-                    console.log("LOGIN:", email, password);
                     const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
 
                     // Flag the user profile as active to display in channel user list etc. 
@@ -94,7 +89,6 @@ export const authApi = firebaseApi.injectEndpoints({
                         }
                     }
 
-                    console.log("userLogin()", userCredential.user);
                     return { data: userCredential.user.uid };
                 }
                 catch (error: any) {
@@ -118,9 +112,8 @@ export const authApi = firebaseApi.injectEndpoints({
                     }
 
                     // Log off the user.
-                    await signOut(firebaseAuth).catch((err) => console.error("FN SIGNOUT ERROR!", err));
-                    await firebaseAuth.signOut().catch((err) => console.error("OBJ SIGNOUT ERROR!", err));;
-                    console.log("userLogoff()", firebaseAuth.currentUser);
+                    await signOut(firebaseAuth).catch((err) => console.error("Firebase Signout error!", err));
+                    await firebaseAuth.signOut().catch((err) => console.error("Firebase Auth signout error!", err));;
                     return { data: "Logout successful." };
                 }
                 catch (error: any) {
@@ -161,6 +154,20 @@ export const authApi = firebaseApi.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
+        /* Send a password reset email to the user with the specified email address */
+        userPasswordReset: builder.mutation<string, string>({
+            async queryFn(email) {
+                try {
+                    await sendPasswordResetEmail(firebaseAuth, email);
+                    return { data: "Password reset email sent." };
+                }
+                catch (error: any) {
+                    return { error: error.code };
+                }
+            },
+            invalidatesTags: ['User'],
+        }),
+
         /* Edit the profile of the current user */
         userEdit: builder.mutation({
             async queryFn({ nickname, email, picture, password, currentPassword }) {
@@ -170,17 +177,14 @@ export const authApi = firebaseApi.injectEndpoints({
                         if (email && (email.length > 4) && (email != firebaseAuth.currentUser.email)) {
                             const authCredential = EmailAuthProvider.credential(firebaseAuth.currentUser.email ?? "", currentPassword);
                             await reauthenticateWithCredential(firebaseAuth.currentUser, authCredential);
-                            await updateEmail(firebaseAuth.currentUser, email);
-                            await sendEmailVerification(firebaseAuth.currentUser);
-                            console.log("USER EMAIL UPDATED");
+                            await verifyBeforeUpdateEmail(firebaseAuth.currentUser, email);
                         }
 
                         // Update password if it has been changed
                         if (password && (password.length > 5)) {
                             const authCredential = EmailAuthProvider.credential(firebaseAuth.currentUser.email ?? "", currentPassword);
                             await reauthenticateWithCredential(firebaseAuth.currentUser, authCredential);
-                            await updatePassword(firebaseAuth.currentUser, password)
-                            console.log("USER PASSWORD UPDATED");
+                            await updatePassword(firebaseAuth.currentUser, password);
                         }
                         else if (password && (password.length > 0) && (password.length < 6)) {
                             throw new FirebaseError("weak-password", "The password must be 6 characters long or more.");
@@ -194,7 +198,6 @@ export const authApi = firebaseApi.injectEndpoints({
                             activity: serverTimestamp()
                         }
                         await updateDoc(doc(firebaseDB, "users", firebaseAuth.currentUser.uid), profileData);
-                        console.log("PROFILE EDIT:", profileData, firebaseAuth.currentUser);
                     }
 
                     return { data: "User profile updated." };
@@ -214,5 +217,6 @@ export const {
     useUserLoginMutation,
     useUserLogoutMutation,
     useUserRegisterMutation,
-    useUserEditMutation
+    useUserEditMutation,
+    useUserPasswordResetMutation
 } = authApi;

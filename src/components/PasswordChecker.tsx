@@ -1,4 +1,6 @@
 /*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
     Component for checking if two specified passwords match and are long enough.
     Shows green or red indicator dot depending on the check result. 
 */

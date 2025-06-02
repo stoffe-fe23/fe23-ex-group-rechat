@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for the chat message component. 
+*/
 .channel-message {
     position: relative;
     display: grid;

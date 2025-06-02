@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Stylesheet for the component displaying the main navigation menu/tabs. 
+*/
 .page-tabs {
     display: none;
     flex-direction: row;

@@ -1,3 +1,8 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Page component with a form to add a new channel.
+*/
 import { useState } from "react";
 import { useCreateChannelMutation } from "../datastore/chatSlice";
 import { useNavigate } from "react-router";
@@ -20,7 +25,6 @@ export default function ChannelCreatePage(): React.JSX.Element {
 
         createChannel({ name, description, permanent }).unwrap()
             .then((channelId) => {
-                console.log("New channel created", channelId);
                 navigate(`/channel/${channelId}`);
             })
             .catch((error: any) => {
@@ -36,7 +40,7 @@ export default function ChannelCreatePage(): React.JSX.Element {
                         <h2>New channel</h2>
                         <div>
                             <label htmlFor="name">Channel name</label>
-                            <input type="text" name="name" id="name" value={name} onChange={(evt) => setName(evt.target.value)} placeholder="Name of the new channel" minLength={4} maxLength={100} required></input>
+                            <input type="text" name="name" id="name" value={name} onChange={(evt) => setName(evt.target.value)} placeholder="Name of the new channel" minLength={4} maxLength={50} required></input>
                         </div>
                         <div>
                             <label htmlFor="description">Short description of channel</label>

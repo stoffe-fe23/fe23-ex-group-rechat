@@ -1,3 +1,9 @@
+/*
+    Group ReChat - Examensarbete uppgift - Kristoffer Bengtsson (FE23)
+
+    Component displaying the Current User button containing ther picture, name and a logoff button.
+    If no user is logged in displays a button linking to the login page instead.  
+*/
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useUserLoadQuery, useUserLogoutMutation } from '../datastore/userSlice';
