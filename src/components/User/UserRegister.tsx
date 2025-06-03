@@ -4,11 +4,11 @@
     Page component for the New User registration form.   
 */
 import React, { useState } from 'react';
-import { useUserRegisterMutation } from '../datastore/userSlice';
+import { useUserRegisterMutation } from '../../datastore/userSlice';
 import { useNavigate } from 'react-router';
 import PasswordChecker from './PasswordChecker';
 
-import styles from "../stylesheets/UserRegister.module.css";
+import styles from "../../stylesheets/UserRegister.module.css";
 import userIconNone from '/usericon-default.png';
 import iconUser from "/icons/icon-user-add.png";
 

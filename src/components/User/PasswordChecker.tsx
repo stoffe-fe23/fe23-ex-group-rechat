@@ -6,7 +6,7 @@
 */
 import React from 'react';
 
-import styles from "../stylesheets/PasswordChecker.module.css";
+import styles from "../../stylesheets/PasswordChecker.module.css";
 
 
 

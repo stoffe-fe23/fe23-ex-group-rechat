@@ -11,16 +11,16 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { firebaseAuth } from './api/firebase-init';
 import { authApi, useUserLoadQuery } from './datastore/userSlice';
 
-import UserLogin from './components/UserLogin';
-import UserProfileButton from './components/UserProfileButton';
-import UserRegister from './components/UserRegister';
-import UserProfilePage from './components/UserProfilePage';
-import UserForgotPassword from './components/UserForgotPassword';
+import UserLogin from './components/User/UserLogin';
+import UserProfileButton from './components/User/UserProfileButton';
+import UserRegister from './components/User/UserRegister';
+import UserProfilePage from './components/User/UserProfilePage';
+import UserForgotPassword from './components/User/UserForgotPassword';
 import FrontPage from './components/FrontPage';
 import PageNotFound from './components/PageNotFound';
-import ChannelJoinPage from './components/ChannelJoinPage';
-import ChannelPage from './components/ChannelPage';
-import ChannelCreatePage from './components/ChannelCreatePage';
+import ChannelJoinPage from './components/Chat/ChannelJoinPage';
+import ChannelPage from './components/Chat/ChannelPage';
+import ChannelCreatePage from './components/Chat/ChannelCreatePage';
 import PageTabs from './components/PageTabs';
 
 import './App.css';

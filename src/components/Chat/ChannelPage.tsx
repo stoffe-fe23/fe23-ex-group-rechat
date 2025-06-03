@@ -7,14 +7,14 @@
 import { NavLink, useParams } from "react-router-dom";
 import ChannelMessages from "./ChannelMessages";
 import ChannelPostMessage from "./ChannelPostMessage";
-import { useUserLoadQuery } from "../datastore/userSlice";
-import { useGetChannelQuery, useJoinChannelMutation } from "../datastore/chatSlice";
+import { useUserLoadQuery } from "../../datastore/userSlice";
+import { useGetChannelQuery, useJoinChannelMutation } from "../../datastore/chatSlice";
 import React, { useEffect, useState } from "react";
 import ChannelUsers from "./ChannelUsers";
 import ChannelLeaveButton from "./ChannelLeaveButton";
-import { ChatUserData } from "../typedefs/chatUserTypes";
+import { ChatUserData } from "../../typedefs/chatUserTypes";
 
-import styles from "../stylesheets/ChannelPage.module.css";
+import styles from "../../stylesheets/ChannelPage.module.css";
 import iconEdit from "/icons/icon-edit.png";
 import ChannelEditorDialog from "./ChannelEditorDialog";
 

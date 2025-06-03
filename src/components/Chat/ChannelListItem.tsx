@@ -5,7 +5,7 @@
 */
 import { NavLink } from "react-router-dom";
 
-import styles from "../stylesheets/ChannelListItem.module.css";
+import styles from "../../stylesheets/ChannelListItem.module.css";
 import iconChannel from '/icons/icon-channel.png';
 
 

@@ -4,11 +4,11 @@
     Page component showing a list of existing channels to join, and a button linking to creating a new channel.  
 */
 import { NavLink } from "react-router-dom";
-import { useListChannelsQuery } from "../datastore/chatSlice";
+import { useListChannelsQuery } from "../../datastore/chatSlice";
 import ChannelListItem from "./ChannelListItem";
-import { useUserLoadQuery } from "../datastore/userSlice";
+import { useUserLoadQuery } from "../../datastore/userSlice";
 
-import styles from "../stylesheets/ChannelJoinPage.module.css";
+import styles from "../../stylesheets/ChannelJoinPage.module.css";
 
 
 export default function ChannelJoinPage(): React.JSX.Element {

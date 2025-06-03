@@ -3,10 +3,10 @@
 
     Component with a list of all participating users in the specified channel.   
 */
-import { useLoadUsersQuery } from "../datastore/chatSlice";
+import { useLoadUsersQuery } from "../../datastore/chatSlice";
 import ChannelUserItem from "./ChannelUserItem";
 
-import styles from "../stylesheets/ChannelUsers.module.css";
+import styles from "../../stylesheets/ChannelUsers.module.css";
 
 type ChannelUsersProps = {
     channelId: string,

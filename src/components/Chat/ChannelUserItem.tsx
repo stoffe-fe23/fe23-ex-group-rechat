@@ -4,10 +4,10 @@
     Component with a card for a user in the user list of a channel.  
 */
 // import { NavLink } from "react-router-dom";
-import { ChannelUser } from "../typedefs/chatChannelTypes";
+import { ChannelUser } from "../../typedefs/chatChannelTypes";
 import { useEffect, useState } from "react";
 
-import styles from "../stylesheets/ChannelUserItem.module.css";
+import styles from "../../stylesheets/ChannelUserItem.module.css";
 import userIconDef from '/usericon-default.png';
 
 type ChannelUserItemProps = {

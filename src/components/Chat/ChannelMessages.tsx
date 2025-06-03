@@ -3,11 +3,11 @@
 
     Component listing all messages belonging to the specified chat channel. 
 */
-import { useGetUserProfileListQuery, useLoadMessagesQuery } from "../datastore/chatSlice";
+import { useGetUserProfileListQuery, useLoadMessagesQuery } from "../../datastore/chatSlice";
 import ChannelMessage from "./ChannelMessage";
-import { ChannelUserProfile } from "../typedefs/chatChannelTypes";
+import { ChannelUserProfile } from "../../typedefs/chatChannelTypes";
 
-import styles from "../stylesheets/ChannelMessages.module.css";
+import styles from "../../stylesheets/ChannelMessages.module.css";
 
 
 

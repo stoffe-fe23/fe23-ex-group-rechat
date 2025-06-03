@@ -4,10 +4,10 @@
     Page component with a form to add a new channel.
 */
 import { useState } from "react";
-import { useCreateChannelMutation } from "../datastore/chatSlice";
+import { useCreateChannelMutation } from "../../datastore/chatSlice";
 import { useNavigate } from "react-router";
 
-import styles from "../stylesheets/ChannelCreatePage.module.css";
+import styles from "../../stylesheets/ChannelCreatePage.module.css";
 import iconChannel from "/icons/icon-channel.png";
 
 

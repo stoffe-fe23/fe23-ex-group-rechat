@@ -5,10 +5,10 @@
 */
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useUserPasswordResetMutation } from '../datastore/userSlice';
+import { useUserPasswordResetMutation } from '../../datastore/userSlice';
 import { useNavigate } from 'react-router';
 
-import styles from "../stylesheets/UserForgotPassword.module.css";
+import styles from "../../stylesheets/UserForgotPassword.module.css";
 import iconDefUser from "/usericon-default.png";
 import iconUser from "/icons/icon-user.png";
 

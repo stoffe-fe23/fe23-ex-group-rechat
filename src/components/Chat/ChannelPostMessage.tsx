@@ -4,9 +4,9 @@
     Component with a form to post a new message to the specified channel.   
 */
 import React, { useState } from 'react';
-import { usePostMessageMutation } from '../datastore/chatSlice';
+import { usePostMessageMutation } from '../../datastore/chatSlice';
 
-import styles from "../stylesheets/ChannelPostMessage.module.css";
+import styles from "../../stylesheets/ChannelPostMessage.module.css";
 import iconTalk from "/icons/icon-talk-add.png";
 import iconEditor from "/icons/icon-editor.png";
 import iconStop from "/icons/icon-cross.png";

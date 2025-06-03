@@ -4,18 +4,18 @@
     Component for a single message in a chat channel. Also contains controls to edit the message
     if the current user is its author. 
 */
-import { ChannelUserProfile, ChatMessage } from "../typedefs/chatChannelTypes";
+import { ChannelUserProfile, ChatMessage } from "../../typedefs/chatChannelTypes";
 import ChannelMessageEdit from "./ChannelMessageEdit";
 import { useState } from "react";
-import { useDeleteMessageMutation } from "../datastore/chatSlice";
-import { useUserLoadQuery } from "../datastore/userSlice";
+import { useDeleteMessageMutation } from "../../datastore/chatSlice";
+import { useUserLoadQuery } from "../../datastore/userSlice";
 import Markdown from "react-markdown";
 
 import iconEdit from "/icons/icon-edit.png";
 import iconDelete from "/icons/icon-trash.png";
 import iconCancel from "/icons/icon-cross.png";
 import userIconDef from '/usericon-default.png';
-import styles from "../stylesheets/ChannelMessage.module.css";
+import styles from "../../stylesheets/ChannelMessage.module.css";
 
 
 type ChannelMessageProps = {

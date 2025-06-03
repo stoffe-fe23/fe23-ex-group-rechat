@@ -5,10 +5,10 @@
     This functionality is only available to the channel owner/admin. 
 */
 import React, { useEffect, useRef, useState } from 'react';
-import { useEditChannelMutation, useLoadUsersQuery } from '../datastore/chatSlice';
-import { ChatChannel } from '../typedefs/chatChannelTypes';
+import { useEditChannelMutation, useLoadUsersQuery } from '../../datastore/chatSlice';
+import { ChatChannel } from '../../typedefs/chatChannelTypes';
 
-import styles from "../stylesheets/ChannelEditorDialog.module.css";
+import styles from "../../stylesheets/ChannelEditorDialog.module.css";
 import iconEdit from "/icons/icon-edit.png";
 import iconCancel from "/icons/icon-stop.png";
 

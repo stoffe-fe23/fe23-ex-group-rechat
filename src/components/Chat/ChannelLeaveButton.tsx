@@ -4,10 +4,10 @@
     Component for the button allowing the user to leave the channel they are currently in.  
 */
 import React from 'react';
-import { useLeaveChannelMutation } from '../datastore/chatSlice';
+import { useLeaveChannelMutation } from '../../datastore/chatSlice';
 import { useNavigate } from 'react-router';
 
-import styles from "../stylesheets/ChannelLeaveButton.module.css";
+import styles from "../../stylesheets/ChannelLeaveButton.module.css";
 import iconExit from "/icons/icon-exit.png";
 
 

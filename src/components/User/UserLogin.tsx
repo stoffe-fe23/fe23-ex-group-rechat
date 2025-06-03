@@ -5,11 +5,11 @@
 */
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useUserLoginMutation } from '../datastore/userSlice';
+import { useUserLoginMutation } from '../../datastore/userSlice';
 import { useNavigate } from 'react-router';
-import { LoginData } from '../typedefs/chatUserTypes';
+import { LoginData } from '../../typedefs/chatUserTypes';
 
-import styles from "../stylesheets/UserLogin.module.css";
+import styles from "../../stylesheets/UserLogin.module.css";
 import iconDefUser from "/usericon-default.png";
 import iconUser from "/icons/icon-user.png";
 

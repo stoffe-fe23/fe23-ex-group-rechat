@@ -7,8 +7,8 @@
 import React, { useEffect, useState } from 'react';
 import userIconDef from '/usericon-default.png';
 import iconCheck from "/icons/icon-check.png";
-import styles from "../stylesheets/UserProfilePage.module.css";
-import { useUserEditMutation, useUserLoadQuery } from '../datastore/userSlice';
+import styles from "../../stylesheets/UserProfilePage.module.css";
+import { useUserEditMutation, useUserLoadQuery } from '../../datastore/userSlice';
 import PasswordChecker from './PasswordChecker';
 
 // Translate relevant Firebase error messages to something a bit more human friendly.

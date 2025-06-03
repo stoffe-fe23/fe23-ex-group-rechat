@@ -6,10 +6,10 @@
 */
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useUserLoadQuery, useUserLogoutMutation } from '../datastore/userSlice';
-import { useUnsubListenersMutation } from '../datastore/chatSlice';
+import { useUserLoadQuery, useUserLogoutMutation } from '../../datastore/userSlice';
+import { useUnsubListenersMutation } from '../../datastore/chatSlice';
 
-import styles from "../stylesheets/UserProfileButton.module.css";
+import styles from "../../stylesheets/UserProfileButton.module.css";
 import userIconNone from '/usericon-none.png';
 import userIconDef from '/usericon-default.png';
 
